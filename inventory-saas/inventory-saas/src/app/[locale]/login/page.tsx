@@ -22,10 +22,13 @@ const ROLE_LABEL_KEY: Record<string, string> = {
  */
 export default async function LoginPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
   const { locale } = await params;
+  const { error } = await searchParams;
   const [t, session, theme, demoAccounts] = await Promise.all([
     getTranslations(),
     getSession(),
@@ -41,6 +44,12 @@ export default async function LoginPage({
     (account) => account.orgName === theme.displayName
   );
   const boundQuickLogin = quickLoginAction.bind(null, locale);
+  const googleErrorMessage =
+    error === "google_no_account"
+      ? t("login.googleErrorNoAccount")
+      : error
+        ? t("login.googleErrorGeneric")
+        : null;
 
   return (
     <main
@@ -73,6 +82,12 @@ export default async function LoginPage({
             </h1>
             <p className="text-sm text-brand-text/60">{t("login.title")}</p>
           </div>
+
+          {googleErrorMessage ? (
+            <p className="mb-3 rounded-lg bg-brand-danger/10 px-3 py-2 text-center text-sm text-brand-danger">
+              {googleErrorMessage}
+            </p>
+          ) : null}
 
           <LoginForm locale={locale} />
         </div>
