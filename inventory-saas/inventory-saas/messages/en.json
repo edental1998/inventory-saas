@@ -19,7 +19,27 @@
     "invalidCredentials": "Invalid email or password",
     "missingFields": "Please fill in email and password",
     "demoAccounts": "Demo accounts for quick testing",
-    "demoPasswordHint": "All demo accounts use the password {password}"
+    "demoPasswordHint": "All demo accounts use the password {password}",
+    "orDivider": "or",
+    "continueWithGoogle": "Continue with Google",
+    "noAccount": "Don't have an account yet?",
+    "signupLink": "Sign up",
+    "googleErrorNoAccount": "No account is linked to this Google account yet. Please sign up first.",
+    "googleErrorGeneric": "Sign-in with Google failed. Please try again."
+  },
+  "signup": {
+    "title": "Set up a new business",
+    "subtitle": "Create a new organization and main admin account",
+    "organizationName": "Business / chain name",
+    "adminName": "Full name",
+    "submit": "Create account",
+    "submitting": "Creating account...",
+    "missingFields": "Please fill in all fields",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "emailTaken": "This email address is already registered",
+    "googleNeedsNames": "Please fill in the business name and your full name before signing up with Google",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Sign in"
   },
   "nav": {
     "ceoDashboard": "HQ Dashboard",
