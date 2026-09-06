@@ -214,3 +214,19 @@ create index if not exists idx_batches_branch_product_active on inventory_batche
 create index if not exists idx_sales_branch_date on sale_records(branch_id, date);
 create index if not exists idx_captures_branch on product_captures(branch_id);
 create index if not exists idx_captures_status on product_captures(status);
+
+-- Google Sign-In: מזהה Google (sub) ייחודי לכל משתמש, ותמיכה במשתמש שנוצר
+-- דרך Google בלבד (בלי סיסמה מקומית) — ראו src/lib/auth/google-oauth.ts
+-- ו-src/lib/data/signup.ts. אלה alter-ים אידמפוטנטיים, בטוחים גם על התקנה
+-- קיימת שכבר הריצה את הגרסה הישנה של הקובץ הזה.
+alter table users add column if not exists google_id text;
+create unique index if not exists idx_users_google_id on users(google_id) where google_id is not null;
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_name = 'users' and column_name = 'password_hash' and is_nullable = 'NO'
+  ) then
+    alter table users alter column password_hash drop not null;
+  end if;
+end $$;
