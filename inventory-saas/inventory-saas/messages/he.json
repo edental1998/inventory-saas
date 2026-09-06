@@ -19,7 +19,27 @@
     "invalidCredentials": "אימייל או סיסמה שגויים",
     "missingFields": "נא למלא אימייל וסיסמה",
     "demoAccounts": "חשבונות דמו לניסיון מהיר",
-    "demoPasswordHint": "כל חשבונות הדמו משתמשים בסיסמה {password}"
+    "demoPasswordHint": "כל חשבונות הדמו משתמשים בסיסמה {password}",
+    "orDivider": "או",
+    "continueWithGoogle": "המשך עם Google",
+    "noAccount": "אין לך חשבון עדיין?",
+    "signupLink": "הרשמה",
+    "googleErrorNoAccount": "לא נמצא חשבון המקושר לחשבון ה-Google הזה. יש להירשם קודם.",
+    "googleErrorGeneric": "ההתחברות עם Google נכשלה. נסו שוב."
+  },
+  "signup": {
+    "title": "הקמת עסק חדש",
+    "subtitle": "יצירת ארגון חדש ומשתמש/ת מנהל/ת ראשי/ת",
+    "organizationName": "שם העסק / הרשת",
+    "adminName": "שם מלא",
+    "submit": "יצירת חשבון",
+    "submitting": "יוצר/ת חשבון...",
+    "missingFields": "נא למלא את כל השדות",
+    "passwordTooShort": "הסיסמה חייבת להכיל לפחות 8 תווים",
+    "emailTaken": "כתובת האימייל הזו כבר רשומה במערכת",
+    "googleNeedsNames": "יש למלא שם עסק ושם מלא לפני ההרשמה עם Google",
+    "haveAccount": "כבר יש לך חשבון?",
+    "loginLink": "התחברות"
   },
   "nav": {
     "ceoDashboard": "דשבורד הנהלה",
