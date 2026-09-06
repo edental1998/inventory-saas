@@ -1,0 +1,301 @@
+// מודל הנתונים המלא של הפלטפורמה — ראו ARCHITECTURE.md להסבר מלא על כל ישות.
+// שכבת ה-DB עדיין לא מחוברת בשלד הראשוני (Phase 0); הסכמה הזו היא הבסיס ל-Phase 1.
+
+generator client {
+  provider        = "prisma-client-js"
+  // מנוע ה-query בגרסת TypeScript/WASM ("rust-free") + driver adapters: כל התלויות
+  // מגיעות דרך npm רגיל, בלי הורדת קובץ engine נפרד בזמן ריצה. ראו lib/prisma.ts.
+  previewFeatures = ["queryCompiler", "driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CHAIN_MANAGER // מנכ"ל / מנהל רשת - רואה את כל הסניפים
+  BRANCH_MANAGER // מנהל סניף - רואה סניף אחד
+  EMPLOYEE // עובד חנות - רואה רק את המשימות שלו
+}
+
+enum BatchStatus {
+  ACTIVE
+  EXPIRING_SOON
+  EXPIRED
+  REMOVED
+}
+
+enum StockMovementType {
+  RECEIVE // קליטת סחורה/מוצר חדש
+  MOVE_TO_SHELF // העלאת מלאי למדף (כולל הוצאה מהמקפיא למדף — ראו ARCHITECTURE.md → "תנועות מלאי חלקיות")
+  MOVE_TO_FREEZER // כניסה למקפיא
+  REMOVE_EXPIRED // הורדת מלאי ישן/פג תוקף
+  WASTE // פחת/השלכה (ראו reason ב-StockMovement לסיבה הספציפית)
+  SALE_ADJUSTMENT // התאמת מלאי בעקבות מכירה
+}
+
+/// הסיבה לזריקה — נאספת בכל אירוע השלכה כדי לאפשר בקרה (ראו ARCHITECTURE.md
+/// → "תנועות מלאי חלקיות וסיבת זריקה"), כולל אפשרות לדגול על חשד לצריכה בלתי
+/// מתועדת של עובד (למשל אכילה במשמרת שלא במסגרת ארוחת עובד מוגדרת).
+enum WasteReason {
+  EXPIRED // פג תוקף
+  QUALITY_ISSUE // מראה/איכות ירודה
+  PEST_CONTAMINATION // מזיקים (זבובים וכד')
+  SUSPECTED_CONSUMPTION // חשד לצריכה/נטילה לא מתועדת על ידי עובד
+  OTHER // אחר
+}
+
+enum TaskType {
+  RECEIVE_DELIVERY
+  RESTOCK_SHELF
+  REMOVE_OLD_STOCK
+  CHECK_EXPIRY
+  CUSTOM
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+  OVERDUE
+}
+
+// --- Phase 2: תיעוד מוצרים בתמונה במקום קוד פריט (ראו ARCHITECTURE.md → "תכנון Phase 2") ---
+
+enum CaptureEventType {
+  ARRIVAL // הגעה לחנות / קליטת סחורה חדשה
+  DISPOSAL // זריקה לפח / ירידה סופית מהמדף
+}
+
+enum CaptureStatus {
+  AUTO_CONFIRMED // ה-AI היה בטוח מספיק (>= סף הביטחון) לגבי זהות המוצר, הפעולה בוצעה מיד
+  PENDING_REVIEW // ה-AI לא בטוח לגבי זהות המוצר, ממתין לבחירת העובד מתוך הניחושים המובילים
+  PENDING_DATE_REVIEW // המוצר ידוע, אבל זוהתה מדבקת תוקף על התמונה — תמיד נדרש אישור/עריכה של עובד לפני שמשתמשים בתאריך (ראו ARCHITECTURE.md → "קריאת מדבקות תוקף")
+  CONFIRMED // העובד אישר/תיקן את זיהוי ה-AI (מוצר ו/או תאריך)
+  REJECTED // העובד סימן שהתמונה לא תקינה (מצלמים שוב)
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  slug      String   @unique // לדוגמה: demo-bakery, demo-cafe — משמש גם לזיהוי לפי תת-דומיין
+  name      String
+  createdAt DateTime @default(now())
+
+  brandTheme BrandTheme?
+  branches   Branch[]
+  users      User[]
+  products   Product[]
+}
+
+/// הגדרת המותג הוויזואלי של ארגון: צבעים, לוגו ותמונות רקע.
+/// זו הישות שמזינה את מנוע ה-theming (ראו src/lib/themes).
+model BrandTheme {
+  id             String @id @default(cuid())
+  organizationId String @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  colorPrimary    String // למשל "#8B4513"
+  colorSecondary  String
+  colorAccent     String
+  colorBackground String
+  colorSurface    String
+  colorText       String
+  colorSuccess    String @default("#16A34A")
+  colorWarning    String @default("#D97706")
+  colorDanger     String @default("#DC2626")
+
+  logoLightUrl String?
+  logoDarkUrl  String?
+  loginBackgroundUrl     String?
+  dashboardBackgroundUrl String?
+
+  fontFamily String @default("Heebo")
+
+  updatedAt DateTime @updatedAt
+}
+
+model Branch {
+  id             String @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name    String
+  address String?
+  timezone String @default("Asia/Jerusalem")
+
+  users            User[]
+  inventoryBatches InventoryBatch[]
+  tasks            Task[]
+  saleRecords      SaleRecord[]
+  productCaptures  ProductCapture[]
+
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id             String @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branchId       String?
+  branch         Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  name  String
+  email String @unique
+  passwordHash String // גיבוב bcrypt של הסיסמה - ראו src/lib/auth/password.ts
+  role  UserRole
+  preferredLocale String @default("he") // he | en
+
+  assignedTasks Task[] @relation("AssignedTasks")
+  createdTasks  Task[] @relation("CreatedTasks")
+  productCaptures ProductCapture[]
+
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id             String @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  nameHe   String
+  nameEn   String
+  category String // למשל: לחם, מאפים מתוקים, עוגות, משקאות
+  unit     String @default("יחידה") // יחידה / ק"ג / מגש וכו'
+  shelfLifeHours Int @default(72) // שעות עד לתפוגה, לא ימים — יש מוצרי מאפה שפגי תוקף תוך יום
+  referencePhotoUrl String? // נשלחת ל-AI כדוגמה חזותית לזיהוי אוטומטי מצילום (ראו ProductCapture)
+
+  inventoryBatches   InventoryBatch[]
+  saleRecords        SaleRecord[]
+  aiSuggestedCaptures ProductCapture[] @relation("AiSuggestedCaptures")
+  resolvedCaptures    ProductCapture[] @relation("ResolvedCaptures")
+
+  createdAt DateTime @default(now())
+}
+
+/// אצווה קונקרטית של מוצר שהגיעה/הוכנה בסניף מסוים — כאן מתבצע מעקב התוקף בפועל.
+model InventoryBatch {
+  id        String @id @default(cuid())
+  branchId  String
+  branch    Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  quantity      Int // הכמות המקורית שהתקבלה — קבועה לנצח, לא מתעדכנת (ראו שלושת השדות הבאים למצב בפועל)
+  receivedAt    DateTime @default(now())
+  expiryDate    DateTime
+  status        BatchStatus @default(ACTIVE)
+  arrivalPhotoUrl String? // תמונה שצולמה בקבלת הסחורה — חותמת הזמן שלה קובעת את receivedAt/expiryDate
+
+  // מונים רצים של "לאן הלכה הכמות" (ראו ARCHITECTURE.md → "תנועות מלאי חלקיות") —
+  // מתעדכנים יחד עם כל StockMovement תואם, לא מחושבים מחדש בכל קריאה. shelfQuantity
+  // ו-freezerQuantity הן שתי "כתובות" אפשריות מתוך המלאי שעדיין לא נזרק; wastedQuantity
+  // היא הכמות שבפועל הושלכה (יכולה להגיע מכל אחת מהכתובות, או ממלאי שמעולם לא הוקצה).
+  shelfQuantity   Int @default(0)
+  freezerQuantity Int @default(0)
+  wastedQuantity  Int @default(0) // האצווה עוברת ל-REMOVED אוטומטית כש-wastedQuantity מגיע ל-quantity
+
+  disposedAt       DateTime? // חותמת הזמן של אירוע הזריקה האחרון על האצווה הזו (יכולים להיות כמה חלקיים)
+  disposalPhotoUrl String?
+  disposedByUserId String?
+
+  createdByUserId String?
+
+  movements StockMovement[]
+  tasks     Task[]
+  captures  ProductCapture[]
+
+  createdAt DateTime @default(now())
+}
+
+model StockMovement {
+  id      String @id @default(cuid())
+  batchId String
+  batch   InventoryBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  type       StockMovementType
+  quantity   Int
+  performedByUserId String?
+  reason     WasteReason? // רלוונטי רק ל-type=WASTE
+  note       String?
+
+  createdAt DateTime @default(now())
+}
+
+model Task {
+  id       String @id @default(cuid())
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  type   TaskType
+  title  String
+  status TaskStatus @default(PENDING)
+
+  assignedToId String?
+  assignedTo   User? @relation("AssignedTasks", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdById  String?
+  createdBy    User? @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: SetNull)
+
+  relatedBatchId String?
+  relatedBatch   InventoryBatch? @relation(fields: [relatedBatchId], references: [id], onDelete: SetNull)
+
+  dueAt            DateTime?
+  completedAt      DateTime?
+  photoRequired    Boolean @default(false)
+  proofPhotoUrl    String?
+
+  createdAt DateTime @default(now())
+}
+
+model SaleRecord {
+  id        String @id @default(cuid())
+  branchId  String
+  branch    Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  date          DateTime // נשמר ברמת יום, מצטבר בזמן שאילתה לתצוגה שבועית/חודשית
+  quantitySold  Int
+  revenue       Float?
+  source        String @default("manual") // manual | import | pos
+
+  createdAt DateTime @default(now())
+}
+
+/// כל צילום מוצר שבוצע (הגעה/זריקה) — הליבה של Phase 2. משמש גם כיומן ביקורת מלא:
+/// מי צילם, מתי, מה ה-AI ניחש, ומה בסופו של דבר אושר. ראו ARCHITECTURE.md → "תכנון Phase 2".
+model ProductCapture {
+  id       String @id @default(cuid())
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  eventType CaptureEventType
+  photoUrl  String
+
+  capturedByUserId String?
+  capturedBy       User?    @relation(fields: [capturedByUserId], references: [id], onDelete: SetNull)
+  capturedAt       DateTime @default(now()) // חותמת הזמן שקובעת את רגע האירוע בפועל — לא הזנה ידנית
+
+  aiSuggestedProductId String?
+  aiSuggestedProduct   Product? @relation("AiSuggestedCaptures", fields: [aiSuggestedProductId], references: [id], onDelete: SetNull)
+  aiConfidence         Float?
+  aiRawResponse        String? // JSON גולמי מהמודל, לשקיפות ולשיפור עתידי של הזיהוי
+
+  resolvedProductId String?
+  resolvedProduct   Product? @relation("ResolvedCaptures", fields: [resolvedProductId], references: [id], onDelete: SetNull)
+  quantity          Int?
+  status            CaptureStatus @default(PENDING_REVIEW)
+  wasteReason       WasteReason? // רלוונטי רק ל-eventType=DISPOSAL — נאסף מהעובד בזמן הצילום
+
+  // קריאת מדבקת תוקף מהתמונה (ARRIVAL בלבד) — ראו ARCHITECTURE.md → "קריאת מדבקות תוקף".
+  // detectedExpiryDate הוא הניחוש הגולמי של ה-AI; confirmedExpiryDate הוא מה שהעובד
+  // בפועל אישר/ערך — האצווה תמיד נוצרת עם confirmedExpiryDate, לא עם הניחוש הגולמי.
+  detectedExpiryDate    DateTime? @db.Date
+  detectedExpiryRawText String?
+  confirmedExpiryDate   DateTime? @db.Date
+
+  resultingBatchId String? // ב-ARRIVAL: האצווה שנוצרה כתוצאה מהצילום; ב-DISPOSAL: האצווה שנסגרה
+  resultingBatch   InventoryBatch? @relation(fields: [resultingBatchId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+}

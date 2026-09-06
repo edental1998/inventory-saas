@@ -1,0 +1,59 @@
+"use client";
+
+import { usePathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
+import { clsx } from "clsx";
+
+export interface SidebarNavItem {
+  href: string;
+  label: string;
+}
+
+export function Sidebar({
+  items,
+  appName,
+  logoSrc,
+}: {
+  items: SidebarNavItem[];
+  appName: string;
+  logoSrc?: string;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <aside className="flex h-full w-56 shrink-0 flex-col gap-6 border-e border-black/5 bg-brand-surface p-4">
+      <div className="flex items-center gap-2 px-2">
+        {logoSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג
+          <img src={logoSrc} alt={appName} className="h-8 w-8 rounded" />
+        ) : (
+          <div
+            className="h-8 w-8 rounded bg-brand-primary"
+            aria-hidden
+          />
+        )}
+        <span className="font-semibold text-brand-text">{appName}</span>
+      </div>
+
+      <nav className="flex flex-col gap-1">
+        {items.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={clsx(
+                "rounded-lg px-3 py-2 text-sm transition-colors",
+                isActive
+                  ? "bg-brand-primary text-brand-on-primary font-medium"
+                  : "text-brand-text/70 hover:bg-black/5 hover:text-brand-text"
+              )}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </aside>
+  );
+}

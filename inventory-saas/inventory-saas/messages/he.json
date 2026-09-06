@@ -1,0 +1,190 @@
+{
+  "common": {
+    "appName": "ניהול מלאי",
+    "language": "שפה",
+    "hebrew": "עברית",
+    "english": "אנגלית",
+    "signOut": "התנתקות",
+    "goToLogin": "מעבר ישיר למסך התחברות"
+  },
+  "landing": {
+    "subtitle": "בחר/י רשת כדי להמשיך להתחברות"
+  },
+  "login": {
+    "title": "התחברות",
+    "email": "אימייל",
+    "password": "סיסמה",
+    "submit": "התחברות",
+    "submitting": "מתחבר/ת...",
+    "invalidCredentials": "אימייל או סיסמה שגויים",
+    "missingFields": "נא למלא אימייל וסיסמה",
+    "demoAccounts": "חשבונות דמו לניסיון מהיר",
+    "demoPasswordHint": "כל חשבונות הדמו משתמשים בסיסמה {password}"
+  },
+  "nav": {
+    "ceoDashboard": "דשבורד הנהלה",
+    "branchDashboard": "דשבורד סניף",
+    "employeeDashboard": "דשבורד עובד",
+    "tasks": "משימות",
+    "inventory": "מלאי",
+    "sales": "מכירות",
+    "captureProduct": "צלם מוצר"
+  },
+  "ceo": {
+    "title": "תמונת מצב — כל הסניפים",
+    "subtitle": "מעקב ביצועים ומשימות בכל סניפי הרשת",
+    "taskCompletionRate": "אחוז ביצוע משימות",
+    "openExpiryAlerts": "התראות תוקף פתוחות",
+    "weeklySales": "מכירות השבוע",
+    "monthlySales": "מכירות החודש",
+    "branchLeaderboard": "השוואת סניפים"
+  },
+  "branch": {
+    "title": "דשבורד מנהל סניף",
+    "subtitle": "משימות, מלאי ומכירות עבור הסניף שלך",
+    "teamTasks": "משימות הצוות",
+    "createTask": "משימה חדשה",
+    "expiryAlerts": "התראות תוקף",
+    "inventoryOverview": "סקירת מלאי"
+  },
+  "employee": {
+    "title": "המשימות שלי",
+    "subtitle": "המשימות שהוקצו לך היום",
+    "markDone": "סמן כבוצע",
+    "uploadPhoto": "צלם והעלה תמונה",
+    "noTasksToday": "אין משימות פתוחות להיום 🎉"
+  },
+  "task": {
+    "type": {
+      "RECEIVE_DELIVERY": "קליטת סחורה",
+      "RESTOCK_SHELF": "העלאת מלאי למדף",
+      "REMOVE_OLD_STOCK": "הורדת מלאי ישן",
+      "CHECK_EXPIRY": "בדיקת תוקפים",
+      "CUSTOM": "משימה כללית"
+    },
+    "status": {
+      "PENDING": "ממתין",
+      "IN_PROGRESS": "בביצוע",
+      "DONE": "הושלם",
+      "OVERDUE": "באיחור"
+    },
+    "dueToday": "יעד: היום",
+    "assignedTo": "משויך ל"
+  },
+  "expiry": {
+    "daysLeft": "{days} ימים לתפוגה",
+    "expiresToday": "פג תוקף היום",
+    "expired": "פג תוקף"
+  },
+  "capture": {
+    "title": "צילום מוצר",
+    "subtitle": "צלמו את המוצר כשהוא מגיע לחנות, וכשהוא יורד מהמדף — בלי קוד פריט. חותמת הזמן של הצילום היא-היא האירוע.",
+    "arrivalTab": "הגעה לחנות",
+    "disposalTab": "זריקה / סיום",
+    "stockMoveTab": "עדכון כמות",
+    "takePhoto": "צלמו או בחרו תמונה",
+    "retake": "צלמו מחדש",
+    "quantity": "כמות",
+    "quantityPlaceholder": "כמה יחידות הגיעו?",
+    "disposalQuantity": "כמות שנזרקה",
+    "disposalQuantityPlaceholder": "כמה יחידות נזרקו בפועל?",
+    "wasteReasonLabel": "סיבת הזריקה",
+    "wasteReasonSelect": "בחרו סיבה",
+    "wasteReason": {
+      "EXPIRED": "פג תוקף",
+      "QUALITY_ISSUE": "מראה/איכות ירודה",
+      "PEST_CONTAMINATION": "מזיקים (זבובים וכד')",
+      "SUSPECTED_CONSUMPTION": "חשד לצריכה/נטילה לא מתועדת על ידי עובד",
+      "OTHER": "אחר"
+    },
+    "submit": "שליחה",
+    "submitting": "שולח ומזהה...",
+    "missingPhoto": "יש לצלם תמונה קודם",
+    "missingQuantity": "יש להזין כמות",
+    "missingWasteReason": "יש לבחור סיבת זריקה",
+    "genericError": "משהו השתבש, נסו שוב",
+    "autoConfirmedArrival": "{name} נקלט בהצלחה! כמות: {quantity}",
+    "autoConfirmedDisposal": "{name} נרשם כזריקה. כמות: {quantity}",
+    "disposalNoBatch": "לא נמצאה אצווה פעילה של המוצר הזה בסניף — הצילום נשמר בכל זאת לתיעוד",
+    "disposalUnallocated": "לתשומת לב: {count} מהכמות שהוזנה לא שויכו למלאי רשום פעיל של המוצר — יכול להיות שהמלאי הרשום במערכת לא תואם לגמרי את המלאי הפיזי",
+    "reviewNeeded": "לא הצלחנו לזהות בביטחון מלא — איזה מוצר זה?",
+    "reviewHint": "הצילום נשמר, רק צריך לאשר איזה מוצר זה",
+    "showFullCatalog": "לא באפשרויות? הצג את כל הקטלוג",
+    "reject": "התמונה לא תקינה, לצלם מחדש",
+    "another": "צלם עוד מוצר",
+    "confirming": "מאשר...",
+    "invalidDate": "תאריך לא תקין",
+    "dateReviewTitle": "זיהינו מדבקת תוקף על {name} — זה נכון?",
+    "dateReviewHint": "אפשר לערוך את התאריך אם צריך, לפני שהוא נשמר במערכת",
+    "detectedRawText": "מה שקראנו על המדבקה: \"{text}\"",
+    "expiryDateLabel": "תאריך תפוגה",
+    "confirmDate": "אישור תאריך",
+    "stockMove": {
+      "hint": "לא לצילום — רק לעדכן איפה נמצאת כמות שכבר נקלטה (למשל: 12 מתוך 20 שהגיעו עולים עכשיו למדף, 8 נשארים במקפיא).",
+      "product": "מוצר",
+      "selectProduct": "בחרו מוצר",
+      "target": "יעד",
+      "targetTO_SHELF": "העברה למדף",
+      "targetTO_FREEZER": "כניסה למקפיא",
+      "targetFREEZER_TO_SHELF": "הוצאה מהמקפיא למדף",
+      "submit": "עדכון",
+      "success": "עודכן בהצלחה: {quantity} יחידות",
+      "partialSuccess": "עודכנו {allocated} יחידות, אבל {missing} מהכמות שהוזנה לא נמצאו במלאי הרשום הפעיל של המוצר"
+    }
+  },
+  "sales": {
+    "title": "דוחות מכירות",
+    "subtitle": "מגמת מכירות, מוצרים מובילים ופחת מול מכירות",
+    "orgSubtitle": "מגמת מכירות, מוצרים מובילים ופחת מול מכירות — כל הסניפים יחד",
+    "dailyTrend": "מגמת מכירות יומית (30 ימים אחרונים)",
+    "topProducts": "המוצרים הנמכרים ביותר",
+    "wasteVsSales": "פחת מול מכירות לפי מוצר",
+    "sold": "נמכר",
+    "wasted": "נזרק",
+    "noData": "אין עדיין נתוני מכירות להצגה",
+    "quantityUnit": "{count} יח'",
+    "importTitle": "ייבוא נתוני מכירות",
+    "importHint": "קובץ CSV עם העמודות: date, product, quantity, ו-revenue (אופציונלי). תאריך בפורמט YYYY-MM-DD או DD/MM/YYYY.",
+    "posNote": "עדיין אין לכם מערכת קופה קבועה שמחוברת אוטומטית — עד שתהיה, אפשר לייבא את נתוני המכירות מקובץ CSV שמייצאים מהקופה הקיימת. כשתבחרו מערכת קופה, נוכל לחבר אותה ישירות באותה נקודת כניסה בדיוק.",
+    "chooseFile": "בחירת קובץ",
+    "noFileChosen": "לא נבחר קובץ",
+    "import": "ייבוא",
+    "importing": "מייבא...",
+    "missingFile": "יש לבחור קובץ קודם",
+    "importDone": "הייבוא הושלם: {imported} שורות נקלטו",
+    "importDoneWithSkipped": "הייבוא הושלם: {imported} שורות נקלטו, {skipped} שורות דולגו",
+    "viewSkipped": "הצג שורות שדולגו",
+    "row": "שורה {row}",
+    "reason": {
+      "empty_file": "הקובץ ריק",
+      "missing_headers": "חסרות עמודות חובה בקובץ",
+      "missing_product": "שם מוצר חסר",
+      "invalid_date": "תאריך לא תקין",
+      "invalid_quantity": "כמות לא תקינה",
+      "invalid_revenue": "סכום הכנסה לא תקין",
+      "unknown_product": "המוצר \"{name}\" לא נמצא בקטלוג"
+    },
+    "error": {
+      "not_authenticated": "יש להתחבר מחדש",
+      "not_authorized": "אין הרשאה לפעולה זו",
+      "unknown_branch": "סניף לא נמצא",
+      "missing_file": "יש לבחור קובץ"
+    },
+    "estimatedVsActual": "אומדן מכירה מול מכירות בפועל",
+    "estimatedVsActualHint": "\"אומדן\" = כמות שעלתה למדף פחות כמות שנזרקה, לפי תיעוד הצילומים — לא נתון מכירה אמיתי. פער חיובי גדול (אומדן גבוה מהמכירות שדווחו) עשוי להצביע על מכירות שלא דווחו, או על חוסר לא מוסבר.",
+    "estimatedSold": "אומדן (מדף פחות פחת)",
+    "actualSold": "נמכר בפועל (מדווח)",
+    "gap": "פער",
+    "wasteReasonsTitle": "פירוט סיבות זריקה",
+    "wasteReasonUnspecified": "לא צוינה סיבה",
+    "quantityLabel": "כמות",
+    "eventsLabel": "אירועים",
+    "wasteReason": {
+      "EXPIRED": "פג תוקף",
+      "QUALITY_ISSUE": "מראה/איכות ירודה",
+      "PEST_CONTAMINATION": "מזיקים (זבובים וכד')",
+      "SUSPECTED_CONSUMPTION": "חשד לצריכה/נטילה לא מתועדת על ידי עובד",
+      "OTHER": "אחר"
+    }
+  }
+}

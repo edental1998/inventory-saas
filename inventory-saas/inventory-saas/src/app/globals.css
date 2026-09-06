@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/*
+ * מיפוי משתני המותג (שמוזרקים דינמית ב-layout לפי הארגון המחובר, ראו
+ * src/lib/themes/theme-to-css-vars.ts) לטוקנים סמנטיים של Tailwind.
+ * הודות לזה אפשר לכתוב bg-brand-primary / text-brand-onPrimary בכל רכיב
+ * ולקבל אוטומטית את הצבע הנכון של המותג הפעיל, בלי if/else אחד בקוד הרכיב.
+ */
+@theme inline {
+  --color-brand-primary: var(--brand-color-primary);
+  --color-brand-secondary: var(--brand-color-secondary);
+  --color-brand-accent: var(--brand-color-accent);
+  --color-brand-background: var(--brand-color-background);
+  --color-brand-surface: var(--brand-color-surface);
+  --color-brand-text: var(--brand-color-text);
+  --color-brand-on-primary: var(--brand-color-on-primary);
+  --color-brand-success: var(--brand-color-success);
+  --color-brand-warning: var(--brand-color-warning);
+  --color-brand-danger: var(--brand-color-danger);
+  --font-brand: var(--brand-font-family), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ברירת מחדל למקרה שהמשתנים עוד לא הוזרקו (למשל שגיאת רשת בטעינת theme) */
+:root {
+  --brand-color-primary: #8b4513;
+  --brand-color-secondary: #d2a679;
+  --brand-color-accent: #e07a3f;
+  --brand-color-background: #fbf6ef;
+  --brand-color-surface: #ffffff;
+  --brand-color-text: #3a2e22;
+  --brand-color-on-primary: #ffffff;
+  --brand-color-success: #16a34a;
+  --brand-color-warning: #d97706;
+  --brand-color-danger: #dc2626;
+  --brand-font-family: "Heebo";
+}
+
+html,
+body {
+  background-color: var(--brand-color-background);
+  color: var(--brand-color-text);
+  font-family: var(--font-brand);
+}
+
+/* חשוב: כל הריווח/היישור בפרויקט נכתב עם מחלקות לוגיות (ms-/me-/ps-/pe-/text-start)
+   ולעולם לא עם ml-/mr-/text-left, כדי שהמעבר בין RTL ל-LTR יעבוד נכון אוטומטית. */

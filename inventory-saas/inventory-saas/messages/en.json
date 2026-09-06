@@ -1,0 +1,190 @@
+{
+  "common": {
+    "appName": "Inventory Manager",
+    "language": "Language",
+    "hebrew": "Hebrew",
+    "english": "English",
+    "signOut": "Sign out",
+    "goToLogin": "Go straight to the login screen"
+  },
+  "landing": {
+    "subtitle": "Choose a chain to continue to login"
+  },
+  "login": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "invalidCredentials": "Invalid email or password",
+    "missingFields": "Please fill in email and password",
+    "demoAccounts": "Demo accounts for quick testing",
+    "demoPasswordHint": "All demo accounts use the password {password}"
+  },
+  "nav": {
+    "ceoDashboard": "HQ Dashboard",
+    "branchDashboard": "Branch Dashboard",
+    "employeeDashboard": "Employee Dashboard",
+    "tasks": "Tasks",
+    "inventory": "Inventory",
+    "sales": "Sales",
+    "captureProduct": "Capture product"
+  },
+  "ceo": {
+    "title": "Overview — All Branches",
+    "subtitle": "Track performance and tasks across every branch in the chain",
+    "taskCompletionRate": "Task completion rate",
+    "openExpiryAlerts": "Open expiry alerts",
+    "weeklySales": "This week's sales",
+    "monthlySales": "This month's sales",
+    "branchLeaderboard": "Branch comparison"
+  },
+  "branch": {
+    "title": "Branch Manager Dashboard",
+    "subtitle": "Tasks, inventory and sales for your branch",
+    "teamTasks": "Team tasks",
+    "createTask": "New task",
+    "expiryAlerts": "Expiry alerts",
+    "inventoryOverview": "Inventory overview"
+  },
+  "employee": {
+    "title": "My Tasks",
+    "subtitle": "Tasks assigned to you today",
+    "markDone": "Mark as done",
+    "uploadPhoto": "Take & upload photo",
+    "noTasksToday": "No open tasks for today 🎉"
+  },
+  "task": {
+    "type": {
+      "RECEIVE_DELIVERY": "Receive delivery",
+      "RESTOCK_SHELF": "Restock shelf",
+      "REMOVE_OLD_STOCK": "Remove old stock",
+      "CHECK_EXPIRY": "Check expiry dates",
+      "CUSTOM": "General task"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done",
+      "OVERDUE": "Overdue"
+    },
+    "dueToday": "Due: today",
+    "assignedTo": "Assigned to"
+  },
+  "expiry": {
+    "daysLeft": "{days} days left",
+    "expiresToday": "Expires today",
+    "expired": "Expired"
+  },
+  "capture": {
+    "title": "Capture product",
+    "subtitle": "Photograph the product when it arrives at the store, and again when it comes off the shelf — no item code needed. The photo's own timestamp is the event.",
+    "arrivalTab": "Arrival",
+    "disposalTab": "Disposal / finished",
+    "stockMoveTab": "Update quantity",
+    "takePhoto": "Take or choose a photo",
+    "retake": "Retake photo",
+    "quantity": "Quantity",
+    "quantityPlaceholder": "How many units arrived?",
+    "disposalQuantity": "Quantity thrown away",
+    "disposalQuantityPlaceholder": "How many units were actually thrown away?",
+    "wasteReasonLabel": "Reason for disposal",
+    "wasteReasonSelect": "Choose a reason",
+    "wasteReason": {
+      "EXPIRED": "Expired",
+      "QUALITY_ISSUE": "Poor appearance/quality",
+      "PEST_CONTAMINATION": "Pests (flies etc.)",
+      "SUSPECTED_CONSUMPTION": "Suspected undocumented consumption by an employee",
+      "OTHER": "Other"
+    },
+    "submit": "Submit",
+    "submitting": "Uploading and identifying...",
+    "missingPhoto": "Please take a photo first",
+    "missingQuantity": "Please enter a quantity",
+    "missingWasteReason": "Please choose a reason for the disposal",
+    "genericError": "Something went wrong, please try again",
+    "autoConfirmedArrival": "{name} received successfully! Quantity: {quantity}",
+    "autoConfirmedDisposal": "{name} logged as disposed. Quantity: {quantity}",
+    "disposalNoBatch": "No active batch of this product was found at the branch — the photo was still saved for the record",
+    "disposalUnallocated": "Note: {count} of the entered quantity could not be matched to an active recorded batch of this product — the system's recorded stock may not fully match the physical stock",
+    "reviewNeeded": "We couldn't identify this with full confidence — which product is it?",
+    "reviewHint": "The photo was saved, we just need you to confirm which product this is",
+    "showFullCatalog": "Not in the list? Show the full catalog",
+    "reject": "Photo isn't clear, retake it",
+    "another": "Capture another product",
+    "confirming": "Confirming...",
+    "invalidDate": "Invalid date",
+    "dateReviewTitle": "We spotted an expiry label on {name} — is this right?",
+    "dateReviewHint": "You can edit the date if needed before it's saved",
+    "detectedRawText": "What we read on the label: \"{text}\"",
+    "expiryDateLabel": "Expiry date",
+    "confirmDate": "Confirm date",
+    "stockMove": {
+      "hint": "Not a photo capture — just updates where an already-received quantity currently is (e.g., 12 of 20 that arrived are going out to the shelf now, 8 stay in the freezer).",
+      "product": "Product",
+      "selectProduct": "Choose a product",
+      "target": "Destination",
+      "targetTO_SHELF": "Move to shelf",
+      "targetTO_FREEZER": "Into the freezer",
+      "targetFREEZER_TO_SHELF": "Out of the freezer, to the shelf",
+      "submit": "Update",
+      "success": "Updated successfully: {quantity} units",
+      "partialSuccess": "Updated {allocated} units, but {missing} of the entered quantity could not be found in the product's active recorded stock"
+    }
+  },
+  "sales": {
+    "title": "Sales reports",
+    "subtitle": "Sales trend, top products, and waste vs. sales",
+    "orgSubtitle": "Sales trend, top products, and waste vs. sales — all branches combined",
+    "dailyTrend": "Daily sales trend (last 30 days)",
+    "topProducts": "Top-selling products",
+    "wasteVsSales": "Waste vs. sales by product",
+    "sold": "Sold",
+    "wasted": "Wasted",
+    "noData": "No sales data yet",
+    "quantityUnit": "{count} units",
+    "importTitle": "Import sales data",
+    "importHint": "A CSV file with the columns: date, product, quantity, and revenue (optional). Dates in YYYY-MM-DD or DD/MM/YYYY format.",
+    "posNote": "You don't have a fixed point-of-sale system connected automatically yet. Until you do, you can import sales data from a CSV file exported from whatever register you use today. Once you pick a POS system, we can wire it in directly at this exact same entry point.",
+    "chooseFile": "Choose file",
+    "noFileChosen": "No file chosen",
+    "import": "Import",
+    "importing": "Importing...",
+    "missingFile": "Please choose a file first",
+    "importDone": "Import complete: {imported} rows imported",
+    "importDoneWithSkipped": "Import complete: {imported} rows imported, {skipped} rows skipped",
+    "viewSkipped": "Show skipped rows",
+    "row": "Row {row}",
+    "reason": {
+      "empty_file": "The file is empty",
+      "missing_headers": "The file is missing required columns",
+      "missing_product": "Missing product name",
+      "invalid_date": "Invalid date",
+      "invalid_quantity": "Invalid quantity",
+      "invalid_revenue": "Invalid revenue amount",
+      "unknown_product": "Product \"{name}\" was not found in the catalog"
+    },
+    "error": {
+      "not_authenticated": "Please sign in again",
+      "not_authorized": "You don't have permission for this action",
+      "unknown_branch": "Branch not found",
+      "missing_file": "Please choose a file"
+    },
+    "estimatedVsActual": "Estimated vs. actual sales",
+    "estimatedVsActualHint": "\"Estimated\" = quantity moved to the shelf minus quantity thrown away, based on capture logs — not a real sales figure. A large positive gap (estimate higher than reported sales) may indicate unreported sales, or an unexplained shortfall.",
+    "estimatedSold": "Estimated (shelf minus waste)",
+    "actualSold": "Actual sold (reported)",
+    "gap": "Gap",
+    "wasteReasonsTitle": "Disposal reasons breakdown",
+    "wasteReasonUnspecified": "No reason specified",
+    "quantityLabel": "Quantity",
+    "eventsLabel": "Events",
+    "wasteReason": {
+      "EXPIRED": "Expired",
+      "QUALITY_ISSUE": "Poor appearance/quality",
+      "PEST_CONTAMINATION": "Pests (flies etc.)",
+      "SUSPECTED_CONSUMPTION": "Suspected undocumented consumption by an employee",
+      "OTHER": "Other"
+    }
+  }
+}
