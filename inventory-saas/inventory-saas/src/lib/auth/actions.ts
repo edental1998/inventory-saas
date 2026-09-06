@@ -9,7 +9,7 @@ import {
   SESSION_MAX_AGE_SECONDS,
   signSessionToken,
 } from "./session";
-import { ROLE_HOME_PATH } from "./types";
+import { ROLE_HOME_PATH, type UserRole } from "./types";
 import { TENANT_HINT_COOKIE } from "@/lib/themes/current-theme";
 
 /**
@@ -23,6 +23,20 @@ export interface LoginActionState {
   error?: LoginErrorCode;
 }
 
+/**
+ * תת-קבוצה של השדות שבאמת נחוצים כדי לפתוח session — בכוונה בלי
+ * passwordHash, כך ש-establishSession תוכל לשמש גם משתמשים שנכנסו/נוצרו
+ * דרך Google בלבד (ראו src/app/api/auth/google/callback/route.ts ו-
+ * src/lib/auth/signup-actions.ts), לא רק כניסה עם אימייל+סיסמה.
+ */
+export interface SessionUser {
+  id: string;
+  organizationId: string;
+  branchId: string | null;
+  role: UserRole;
+  name: string;
+}
+
 async function authenticate(
   email: string,
   password: string
@@ -34,7 +48,7 @@ async function authenticate(
   return passwordMatches ? user : null;
 }
 
-async function establishSession(user: AuthUserRow): Promise<void> {
+export async function establishSession(user: SessionUser): Promise<void> {
   const token = await signSessionToken({
     userId: user.id,
     organizationId: user.organizationId,
