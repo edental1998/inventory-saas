@@ -51,6 +51,19 @@ function getAuthSecret(): string {
   return process.env.AUTH_SECRET ?? "dev-only-insecure-secret-change-me";
 }
 
+/**
+ * מאחורי ה-proxy של Render, request.nextUrl.origin נפתר לכתובת הפנימית
+ * (למשל http://localhost:10000) ולא לדומיין הציבורי — מה שגורם ל-Google
+ * לדחות את redirect_uri (redirect_uri_mismatch), כי הוא לא תואם בדיוק
+ * לכתובת שרשומה ב-Google Cloud Console. APP_URL הוא מקור האמת המפורש
+ * לכתובת הציבורית בפרודקשן; ב-dev מקומי (localhost) אין את הבעיה הזו,
+ * ולכן requestOrigin משמש כברירת מחדל.
+ */
+export function getAppOrigin(requestOrigin: string): string {
+  const configured = process.env.APP_URL;
+  return configured ? configured.replace(/\/+$/, "") : requestOrigin;
+}
+
 function base64UrlEncode(bytes: Uint8Array): string {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);

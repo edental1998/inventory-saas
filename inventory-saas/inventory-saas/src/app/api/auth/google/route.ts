@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import {
   buildGoogleAuthorizeUrl,
+  getAppOrigin,
   signOAuthState,
 } from "@/lib/auth/google-oauth";
 
@@ -13,7 +14,8 @@ import {
  * Route Handler רגיל (GET) ולא Server Action.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
+  const origin = getAppOrigin(request.nextUrl.origin);
   const intent = searchParams.get("intent") === "signup" ? "signup" : "login";
   const locale = searchParams.get("locale") || "he";
   const orgName = searchParams.get("orgName") || undefined;

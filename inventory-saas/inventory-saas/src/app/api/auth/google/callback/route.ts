@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import {
   exchangeGoogleCode,
   fetchGoogleUserInfo,
+  getAppOrigin,
   verifyOAuthState,
 } from "@/lib/auth/google-oauth";
 import { establishSession } from "@/lib/auth/actions";
@@ -24,7 +25,8 @@ import {
  *    שמסבירה שצריך להירשם קודם.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
+  const origin = getAppOrigin(request.nextUrl.origin);
   const code = searchParams.get("code");
   const stateToken = searchParams.get("state");
   const state = await verifyOAuthState(stateToken);
