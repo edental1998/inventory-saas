@@ -29,11 +29,12 @@ export default async function LoginPage({
 }) {
   const { locale } = await params;
   const { error } = await searchParams;
+  const showDemoAccounts = process.env.SHOW_DEMO_ACCOUNTS === "true";
   const [t, session, theme, demoAccounts] = await Promise.all([
     getTranslations(),
     getSession(),
     getCurrentTheme(),
-    listDemoAccounts(),
+    showDemoAccounts ? listDemoAccounts() : Promise.resolve([]),
   ]);
 
   if (session) {
