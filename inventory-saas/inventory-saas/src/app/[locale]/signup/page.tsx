@@ -33,7 +33,7 @@ export default async function SignupPage({
       <div className="flex w-full max-w-sm flex-col gap-4">
         <div className="rounded-2xl bg-brand-surface p-8 shadow-xl">
           <div className="mb-6 flex flex-col items-center gap-3 text-center">
-            <GestionMark className="h-6 w-auto" />
+            <GestionMark className="h-24 w-auto" />
             <div>
               <h1 className="text-lg font-bold text-brand-text">
                 {t("signup.title")}
@@ -56,8 +56,10 @@ export default async function SignupPage({
             </a>
           </p>
         </div>
+      </div>
 
-        <PoweredByGestion className="self-center rounded-full bg-brand-surface/90 px-3 py-1.5 shadow" />
+      <div className="absolute inset-x-0 bottom-6 flex justify-center">
+        <PoweredByGestion className="rounded-full bg-brand-surface/90 px-3 py-1.5 shadow" />
       </div>
     </main>
   );

@@ -73,7 +73,7 @@ export default async function LoginPage({
       <div className="flex w-full max-w-sm flex-col gap-4">
         <div className="rounded-2xl bg-brand-surface p-8 shadow-xl">
           <div className="mb-6 flex flex-col items-center gap-3 text-center">
-            <GestionMark className="h-6 w-auto" />
+            <GestionMark className="h-24 w-auto" />
             {/* eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג */}
             <img
               src={theme.logo.light}
@@ -126,8 +126,10 @@ export default async function LoginPage({
             </p>
           </div>
         ) : null}
+      </div>
 
-        <PoweredByGestion className="self-center rounded-full bg-brand-surface/90 px-3 py-1.5 shadow" />
+      <div className="absolute inset-x-0 bottom-6 flex justify-center">
+        <PoweredByGestion className="rounded-full bg-brand-surface/90 px-3 py-1.5 shadow" />
       </div>
     </main>
   );

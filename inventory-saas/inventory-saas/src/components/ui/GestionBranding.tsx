@@ -7,7 +7,7 @@
 export function GestionMark({ className }: { className?: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- לוגו המערכת, קובץ סטטי קבוע
-    <img src="/gestion-logo.jpg" alt="Gestion" className={className} />
+    <img src="/gestion-logo.png" alt="Gestion" className={className} />
   );
 }
 

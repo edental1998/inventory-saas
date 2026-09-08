@@ -3,7 +3,7 @@
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { clsx } from "clsx";
-import { GestionMark, PoweredByGestion } from "@/components/ui/GestionBranding";
+import { GestionMark } from "@/components/ui/GestionBranding";
 
 export interface SidebarNavItem {
   href: string;
@@ -26,9 +26,9 @@ export function Sidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-56 shrink-0 flex-col gap-6 border-e border-black/5 bg-brand-surface p-4">
-      <div className="flex justify-center px-2">
-        <GestionMark className="h-8 w-auto" />
+    <aside className="flex h-full w-72 shrink-0 flex-col gap-6 border-e border-black/5 bg-brand-surface p-4">
+      <div className="flex justify-center px-2 py-2">
+        <GestionMark className="h-32 w-auto" />
       </div>
 
       <div className="flex items-center gap-2 px-2">
@@ -73,8 +73,6 @@ export function Sidebar({
           );
         })}
       </nav>
-
-      <PoweredByGestion className="border-t border-black/5 px-2 pt-3" />
     </aside>
   );
 }
