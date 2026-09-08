@@ -8,6 +8,7 @@ import { quickLoginAction } from "@/lib/auth/actions";
 import { DEMO_ACCOUNT_PASSWORD } from "@/lib/auth/demo-password";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
+import { GestionMark, PoweredByGestion } from "@/components/ui/GestionBranding";
 
 const ROLE_LABEL_KEY: Record<string, string> = {
   CHAIN_MANAGER: "nav.ceoDashboard",
@@ -72,6 +73,7 @@ export default async function LoginPage({
       <div className="flex w-full max-w-sm flex-col gap-4">
         <div className="rounded-2xl bg-brand-surface p-8 shadow-xl">
           <div className="mb-6 flex flex-col items-center gap-3 text-center">
+            <GestionMark className="h-6 w-auto" />
             {/* eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג */}
             <img
               src={theme.logo.light}
@@ -124,6 +126,8 @@ export default async function LoginPage({
             </p>
           </div>
         ) : null}
+
+        <PoweredByGestion className="self-center rounded-full bg-brand-surface/90 px-3 py-1.5 shadow" />
       </div>
     </main>
   );
