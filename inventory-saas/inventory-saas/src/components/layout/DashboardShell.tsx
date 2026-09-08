@@ -14,6 +14,7 @@ import { logoutAction } from "@/lib/auth/actions";
 export function DashboardShell({
   theme,
   navItems,
+  navExtra,
   appName,
   title,
   subtitle,
@@ -25,6 +26,7 @@ export function DashboardShell({
 }: {
   theme: BrandTheme;
   navItems: SidebarNavItem[];
+  navExtra?: ReactNode;
   appName: string;
   title: string;
   subtitle?: string;
@@ -45,6 +47,7 @@ export function DashboardShell({
           orgName={theme.displayName}
           roleLabel={roleLabel}
           logoSrc={theme.logo.light}
+          navExtra={navExtra}
         />
         <div className="flex flex-1 flex-col">
           <TopBar

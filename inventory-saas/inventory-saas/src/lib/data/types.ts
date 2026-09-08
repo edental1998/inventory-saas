@@ -37,6 +37,14 @@ export interface DbBranchSummary {
   monthlySales: number;
 }
 
+export interface DbBranchManager {
+  id: string;
+  name: string;
+  email: string;
+  branchId: string;
+  branchName: string;
+}
+
 export interface OrgWithTheme {
   id: string;
   slug: string;

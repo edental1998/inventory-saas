@@ -48,7 +48,10 @@
     "tasks": "משימות",
     "inventory": "מלאי",
     "sales": "מכירות",
-    "captureProduct": "צלם מוצר"
+    "captureProduct": "צלם מוצר",
+    "switchBranch": "בחר סניף",
+    "allBranchesTasks": "משימות כל הסניפים",
+    "managerTracking": "מעקב מנהלים"
   },
   "ceo": {
     "title": "תמונת מצב — כל הסניפים",
@@ -57,7 +60,14 @@
     "openExpiryAlerts": "התראות תוקף פתוחות",
     "weeklySales": "מכירות השבוע",
     "monthlySales": "מכירות החודש",
-    "branchLeaderboard": "השוואת סניפים"
+    "branchLeaderboard": "השוואת סניפים",
+    "branchManager": "מנהל/ת הסניף",
+    "noManagerAssigned": "טרם שויך מנהל/ת לסניף זה",
+    "noTasks": "אין משימות כרגע",
+    "tasksTitle": "משימות כל הסניפים",
+    "tasksSubtitle": "מעקב חי אחר המשימות המתבצעות בכל סניף, לצד אחוז הביצוע",
+    "managersTitle": "מעקב מנהלים",
+    "managersSubtitle": "פעילות מנהלי הסניפים ונתוני הביצועים של הסניף שלהם"
   },
   "branch": {
     "title": "דשבורד מנהל סניף",

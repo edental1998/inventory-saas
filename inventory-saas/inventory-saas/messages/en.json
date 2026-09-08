@@ -48,7 +48,10 @@
     "tasks": "Tasks",
     "inventory": "Inventory",
     "sales": "Sales",
-    "captureProduct": "Capture product"
+    "captureProduct": "Capture product",
+    "switchBranch": "Select branch",
+    "allBranchesTasks": "All-branches tasks",
+    "managerTracking": "Manager tracking"
   },
   "ceo": {
     "title": "Overview — All Branches",
@@ -57,7 +60,14 @@
     "openExpiryAlerts": "Open expiry alerts",
     "weeklySales": "This week's sales",
     "monthlySales": "This month's sales",
-    "branchLeaderboard": "Branch comparison"
+    "branchLeaderboard": "Branch comparison",
+    "branchManager": "Branch manager",
+    "noManagerAssigned": "No manager assigned to this branch yet",
+    "noTasks": "No tasks right now",
+    "tasksTitle": "All-branches tasks",
+    "tasksSubtitle": "Live tracking of tasks running in every branch, alongside completion rate",
+    "managersTitle": "Manager tracking",
+    "managersSubtitle": "Branch managers' activity and their branch's performance data"
   },
   "branch": {
     "title": "Branch Manager Dashboard",

@@ -1,5 +1,6 @@
 import { query } from "@/lib/db";
 import type { UserRole } from "@/lib/auth/types";
+import type { DbBranchManager } from "./types";
 
 export interface AuthUserRow {
   id: string;
@@ -41,6 +42,46 @@ export async function getBranchEmployees(
     [branchId]
   );
   return rows;
+}
+
+const BRANCH_MANAGER_SELECT = `
+  select u.id, u.name, u.email, u.branch_id, b.name as branch_name
+  from users u
+  join branches b on b.id = u.branch_id
+  where u.role = 'BRANCH_MANAGER'
+`;
+
+function mapBranchManagerRow(row: Record<string, unknown>): DbBranchManager {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    email: row.email as string,
+    branchId: row.branch_id as string,
+    branchName: row.branch_name as string,
+  };
+}
+
+/** כל מנהלי הסניפים בארגון — למסך "מעקב מנהלים" */
+export async function getBranchManagersForOrg(
+  organizationId: string
+): Promise<DbBranchManager[]> {
+  const { rows } = await query(
+    `${BRANCH_MANAGER_SELECT} and b.organization_id = $1 order by b.name`,
+    [organizationId]
+  );
+  return rows.map(mapBranchManagerRow);
+}
+
+/** מנהל/ת הסניף הספציפי הזה, אם יש (ייתכן שאין — עדיין אין תהליך הזמנת מנהלים) */
+export async function getBranchManager(
+  branchId: string
+): Promise<DbBranchManager | null> {
+  const { rows } = await query(
+    `${BRANCH_MANAGER_SELECT} and u.branch_id = $1 limit 1`,
+    [branchId]
+  );
+  const row = rows[0];
+  return row ? mapBranchManagerRow(row) : null;
 }
 
 export interface DemoAccount {

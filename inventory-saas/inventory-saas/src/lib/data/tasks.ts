@@ -38,6 +38,15 @@ export async function getTasksForBranch(branchId: string): Promise<DbTask[]> {
   return rows.map(mapTaskRow);
 }
 
+/** כל המשימות בכל סניפי הארגון — לתצוגת מעקב כלל-רשתית (מסך "משימות כל הסניפים") */
+export async function getTasksForOrg(organizationId: string): Promise<DbTask[]> {
+  const { rows } = await query(
+    `${TASK_SELECT} where b.organization_id = $1 order by b.name, ${STATUS_ORDER}, tsk.created_at asc`,
+    [organizationId]
+  );
+  return rows.map(mapTaskRow);
+}
+
 export async function getOpenTasksForUser(userId: string): Promise<DbTask[]> {
   const { rows } = await query(
     `${TASK_SELECT} where tsk.assigned_to_id = $1 and tsk.status <> 'DONE'

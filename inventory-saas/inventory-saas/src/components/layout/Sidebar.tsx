@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { clsx } from "clsx";
@@ -16,12 +17,14 @@ export function Sidebar({
   orgName,
   roleLabel,
   logoSrc,
+  navExtra,
 }: {
   items: SidebarNavItem[];
   appName: string;
   orgName: string;
   roleLabel: string;
   logoSrc?: string;
+  navExtra?: ReactNode;
 }) {
   const pathname = usePathname();
 
@@ -53,6 +56,8 @@ export function Sidebar({
           </span>
         </div>
       </div>
+
+      {navExtra}
 
       <nav className="flex flex-1 flex-col gap-1">
         {items.map((item) => {

@@ -21,6 +21,21 @@ export async function getBranchById(
   return rows[0] ?? null;
 }
 
+/**
+ * כמו getBranchById, אבל גם מוודא שהסניף שייך לארגון הנתון — כדי שמנכ"ל
+ * לא יוכל לצפות בסניף של ארגון אחר גם אם ה-branchId הגיע ישירות מה-URL.
+ */
+export async function getBranchForOrg(
+  branchId: string,
+  organizationId: string
+): Promise<{ id: string; name: string } | null> {
+  const { rows } = await query<{ id: string; name: string }>(
+    `select id, name from branches where id = $1 and organization_id = $2`,
+    [branchId, organizationId]
+  );
+  return rows[0] ?? null;
+}
+
 export async function getBranchSummary(
   branchId: string,
   branchName: string
