@@ -13,11 +13,13 @@ export function Sidebar({
   items,
   appName,
   orgName,
+  roleLabel,
   logoSrc,
 }: {
   items: SidebarNavItem[];
   appName: string;
   orgName: string;
+  roleLabel: string;
   logoSrc?: string;
 }) {
   const pathname = usePathname();
@@ -40,6 +42,9 @@ export function Sidebar({
           </span>
           <span className="truncate text-xs text-brand-text/50">
             {appName}
+          </span>
+          <span className="truncate text-xs font-medium text-brand-accent">
+            {roleLabel}
           </span>
         </div>
       </div>

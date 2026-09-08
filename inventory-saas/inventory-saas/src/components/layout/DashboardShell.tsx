@@ -41,6 +41,7 @@ export function DashboardShell({
         items={navItems}
         appName={appName}
         orgName={theme.displayName}
+        roleLabel={roleLabel}
         logoSrc={theme.logo.light}
       />
       <div className="flex flex-1 flex-col">
