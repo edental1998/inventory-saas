@@ -7,16 +7,31 @@ export type TaskType =
 
 export type TaskStatus = "PENDING" | "IN_PROGRESS" | "DONE" | "OVERDUE";
 
+export interface TaskChecklistItem {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
 export interface DbTask {
   id: string;
   type: TaskType;
   title: string;
+  description: string | null;
   status: TaskStatus;
   assignedToId: string | null;
   assignedToName: string | null;
   branchId: string;
   branchName: string;
   photoRequired: boolean;
+  proofPhotoUrl: string | null;
+  dueAt: string | null;
+  startedAt: string | null;
+  startedById: string | null;
+  completedAt: string | null;
+  completedById: string | null;
+  completionNotes: string | null;
+  checklist: TaskChecklistItem[] | null;
 }
 
 export interface DbExpiryAlert {

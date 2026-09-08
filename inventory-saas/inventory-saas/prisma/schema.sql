@@ -230,3 +230,16 @@ begin
     alter table users alter column password_hash drop not null;
   end if;
 end $$;
+
+-- מחזור חיים אמיתי למשימה (Slice 1 של שיפוץ הניווט): PENDING/DONE היו עד עכשיו
+-- שני המצבים היחידים שנכתבו בפועל — IN_PROGRESS ו-OVERDUE הוגדרו ב-CHECK אבל
+-- אף קוד לא כתב אליהם. העמודות האלה נותנות ל-"התחל משימה"/"השלם משימה" משמעות
+-- אמיתית, כולל מי (לא רק מתי) ביצע כל מעבר — ראו getTaskOwnership/completeTask
+-- ב-src/lib/data/tasks.ts. כולן nullable/תוספתיות: שורות קיימות ושאילתות קיימות
+-- ממשיכות לעבוד בלי שינוי.
+alter table tasks add column if not exists started_at timestamptz;
+alter table tasks add column if not exists started_by_id text references users(id) on delete set null;
+alter table tasks add column if not exists completed_by_id text references users(id) on delete set null;
+alter table tasks add column if not exists completion_notes text;
+alter table tasks add column if not exists description text;
+alter table tasks add column if not exists checklist jsonb;
