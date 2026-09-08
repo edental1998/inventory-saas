@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { routing, getDirection } from "@/i18n/routing";
 import { getCurrentTheme } from "@/lib/themes/current-theme";
 import { BrandStyleInjector } from "@/components/theme/BrandStyleInjector";
+import { heebo, rubik } from "@/lib/fonts";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -45,7 +46,11 @@ export default async function LocaleLayout({
   ]);
 
   return (
-    <html lang={locale} dir={getDirection(locale)}>
+    <html
+      lang={locale}
+      dir={getDirection(locale)}
+      className={`${heebo.variable} ${rubik.variable}`}
+    >
       <head>
         <BrandStyleInjector theme={theme} />
       </head>
