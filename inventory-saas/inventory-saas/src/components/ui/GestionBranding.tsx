@@ -14,10 +14,10 @@ export function GestionMark({ className }: { className?: string }) {
 export function PoweredByGestion({ className }: { className?: string }) {
   return (
     <div
-      className={`flex items-center justify-center gap-1.5 text-[11px] text-brand-text/40 ${className ?? ""}`}
+      className={`flex items-center justify-center gap-3 text-[44px] text-brand-text/40 ${className ?? ""}`}
     >
       <span>Powered by</span>
-      <GestionMark className="h-3 w-auto" />
+      <GestionMark className="h-[120px] w-auto" />
     </div>
   );
 }
