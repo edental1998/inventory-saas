@@ -12,10 +12,12 @@ export interface SidebarNavItem {
 export function Sidebar({
   items,
   appName,
+  orgName,
   logoSrc,
 }: {
   items: SidebarNavItem[];
   appName: string;
+  orgName: string;
   logoSrc?: string;
 }) {
   const pathname = usePathname();
@@ -25,14 +27,21 @@ export function Sidebar({
       <div className="flex items-center gap-2 px-2">
         {logoSrc ? (
           // eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג
-          <img src={logoSrc} alt={appName} className="h-8 w-8 rounded" />
+          <img src={logoSrc} alt={orgName} className="h-8 w-8 rounded" />
         ) : (
           <div
             className="h-8 w-8 rounded bg-brand-primary"
             aria-hidden
           />
         )}
-        <span className="font-semibold text-brand-text">{appName}</span>
+        <div className="flex min-w-0 flex-col">
+          <span className="truncate font-semibold text-brand-text">
+            {orgName}
+          </span>
+          <span className="truncate text-xs text-brand-text/50">
+            {appName}
+          </span>
+        </div>
       </div>
 
       <nav className="flex flex-col gap-1">

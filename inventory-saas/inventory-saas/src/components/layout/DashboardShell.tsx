@@ -37,7 +37,12 @@ export function DashboardShell({
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar items={navItems} appName={appName} logoSrc={theme.logo.light} />
+      <Sidebar
+        items={navItems}
+        appName={appName}
+        orgName={theme.displayName}
+        logoSrc={theme.logo.light}
+      />
       <div className="flex flex-1 flex-col">
         <TopBar
           title={title}
