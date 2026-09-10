@@ -6,7 +6,7 @@ const TASK_SELECT = `
          tsk.proof_photo_url, tsk.due_at, tsk.started_at, tsk.started_by_id,
          tsk.completed_at, tsk.completed_by_id, tsk.completion_notes, tsk.checklist,
          tsk.assigned_to_id, u.name as assigned_to_name,
-         tsk.branch_id, b.name as branch_name
+         tsk.branch_id, b.name as branch_name, b.timezone as branch_timezone
   from tasks tsk
   join branches b on b.id = tsk.branch_id
   left join users u on u.id = tsk.assigned_to_id
@@ -29,6 +29,7 @@ function mapTaskRow(row: Record<string, unknown>): DbTask {
     assignedToName: (row.assigned_to_name as string | null) ?? null,
     branchId: row.branch_id as string,
     branchName: row.branch_name as string,
+    branchTimezone: row.branch_timezone as string,
     photoRequired: row.photo_required as boolean,
     proofPhotoUrl: (row.proof_photo_url as string | null) ?? null,
     dueAt: row.due_at ? new Date(row.due_at as string).toISOString() : null,
@@ -65,6 +66,33 @@ export async function getOpenTasksForUser(userId: string): Promise<DbTask[]> {
     [userId]
   );
   return rows.map(mapTaskRow);
+}
+
+/**
+ * כל המשימות הרלוונטיות ל"היום שלי": פתוחות (בכל סטטוס שאינו DONE) + מה
+ * שהושלם היום — לפי היום העסקי-מקומי של הסניף (b.timezone), לא חצות UTC.
+ * הפילוח בפועל לארבע הקבוצות (עכשיו/קרובות/באיחור/הושלמו היום) נעשה
+ * בקוד הקורא (src/app/.../employee/dashboard/page.tsx) לפי אותו אזור זמן.
+ */
+export async function getTasksForUserToday(userId: string): Promise<DbTask[]> {
+  const { rows } = await query(
+    `${TASK_SELECT}
+     where tsk.assigned_to_id = $1
+       and (
+         tsk.status <> 'DONE'
+         or (tsk.completed_at at time zone b.timezone)::date = (now() at time zone b.timezone)::date
+       )
+     order by ${STATUS_ORDER}, tsk.due_at asc nulls last, tsk.created_at asc`,
+    [userId]
+  );
+  return rows.map(mapTaskRow);
+}
+
+/** משימה בודדת לפי מזהה — לעמוד הפרטים. ה-caller אחראי לבדוק הרשאה (assignedToId/branchId) אחרי השליפה */
+export async function getTaskById(taskId: string): Promise<DbTask | null> {
+  const { rows } = await query(`${TASK_SELECT} where tsk.id = $1`, [taskId]);
+  const row = rows[0];
+  return row ? mapTaskRow(row) : null;
 }
 
 /**

@@ -78,11 +78,36 @@
     "inventoryOverview": "סקירת מלאי"
   },
   "employee": {
-    "title": "המשימות שלי",
-    "subtitle": "המשימות שהוקצו לך היום",
+    "title": "היום שלי",
+    "subtitle": "המשימות שלך להיום, לפי דחיפות",
     "markDone": "סמן כבוצע",
     "uploadPhoto": "צלם והעלה תמונה",
     "noTasksToday": "אין משימות פתוחות להיום 🎉"
+  },
+  "myDay": {
+    "overdue": "באיחור",
+    "needsNow": "צריך להתבצע עכשיו",
+    "upcoming": "משימות קרובות",
+    "completedToday": "הושלמו היום",
+    "noTasksInSection": "אין משימות כאן כרגע"
+  },
+  "taskDetail": {
+    "back": "חזרה להיום שלי",
+    "description": "הנחיות",
+    "due": "יעד",
+    "noDue": "ללא יעד",
+    "checklist": "רשימת בדיקה",
+    "statusLabel": "סטטוס",
+    "startButton": "התחל משימה",
+    "completeButton": "השלם משימה",
+    "overrideButton": "השלם עבור העובד/ת",
+    "notesLabel": "הערות",
+    "notesPlaceholder": "הערות (לא חובה)",
+    "submitting": "שולח...",
+    "missingPhoto": "יש לצרף תמונה כדי להשלים משימה זו",
+    "missingNotes": "יש לפרט הערה כשמשלימים משימה בשם עובד/ת אחר/ת",
+    "completedByOverride": "משימה זו הושלמה על ידי מנהל/ת הסניף, לא על ידי מי שהיא שויכה אליו/ה",
+    "completionNotesLabel": "הערות השלמה"
   },
   "task": {
     "type": {
@@ -93,7 +118,7 @@
       "CUSTOM": "משימה כללית"
     },
     "status": {
-      "PENDING": "ממתין",
+      "PENDING": "לביצוע",
       "IN_PROGRESS": "בביצוע",
       "DONE": "הושלם",
       "OVERDUE": "באיחור"

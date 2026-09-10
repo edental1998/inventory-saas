@@ -78,11 +78,36 @@
     "inventoryOverview": "Inventory overview"
   },
   "employee": {
-    "title": "My Tasks",
-    "subtitle": "Tasks assigned to you today",
+    "title": "My Day",
+    "subtitle": "Your tasks for today, by urgency",
     "markDone": "Mark as done",
     "uploadPhoto": "Take & upload photo",
     "noTasksToday": "No open tasks for today 🎉"
+  },
+  "myDay": {
+    "overdue": "Overdue",
+    "needsNow": "Needs attention now",
+    "upcoming": "Upcoming",
+    "completedToday": "Completed today",
+    "noTasksInSection": "Nothing here right now"
+  },
+  "taskDetail": {
+    "back": "Back to My Day",
+    "description": "Instructions",
+    "due": "Due",
+    "noDue": "No due date",
+    "checklist": "Checklist",
+    "statusLabel": "Status",
+    "startButton": "Start Task",
+    "completeButton": "Complete Task",
+    "overrideButton": "Complete on employee's behalf",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Notes (optional)",
+    "submitting": "Submitting...",
+    "missingPhoto": "A photo is required to complete this task",
+    "missingNotes": "Please explain why when completing a task on someone else's behalf",
+    "completedByOverride": "This task was completed by the branch manager, not by the person it was assigned to",
+    "completionNotesLabel": "Completion notes"
   },
   "task": {
     "type": {
@@ -93,7 +118,7 @@
       "CUSTOM": "General task"
     },
     "status": {
-      "PENDING": "Pending",
+      "PENDING": "To Do",
       "IN_PROGRESS": "In progress",
       "DONE": "Done",
       "OVERDUE": "Overdue"

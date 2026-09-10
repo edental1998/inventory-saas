@@ -23,6 +23,8 @@ export interface DbTask {
   assignedToName: string | null;
   branchId: string;
   branchName: string;
+  /** אזור הזמן העסקי של הסניף (למשל 'Asia/Jerusalem') — לצורך "היום"/"באיחור" נכונים, לא UTC */
+  branchTimezone: string;
   photoRequired: boolean;
   proofPhotoUrl: string | null;
   dueAt: string | null;
