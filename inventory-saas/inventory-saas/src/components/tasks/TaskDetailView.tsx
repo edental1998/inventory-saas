@@ -133,6 +133,14 @@ export function TaskDetailView({
               <p className="text-sm text-brand-text/80">{task.completionNotes}</p>
             </>
           ) : null}
+          {task.proofPhotoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- תמונת הוכחה שהועלתה דינמית, לא asset סטטי
+            <img
+              src={task.proofPhotoUrl}
+              alt=""
+              className="mt-3 max-h-64 rounded-lg object-cover"
+            />
+          ) : null}
         </div>
       ) : null}
 
