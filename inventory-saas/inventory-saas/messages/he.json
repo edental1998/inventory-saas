@@ -69,6 +69,26 @@
     "managersTitle": "מעקב מנהלים",
     "managersSubtitle": "פעילות מנהלי הסניפים ונתוני הביצועים של הסניף שלהם"
   },
+  "team": {
+    "addTeamMember": "הוספת חבר/ת צוות",
+    "newTitle": "הוספת חבר/ת צוות",
+    "newSubtitle": "יצירת משתמש/ת חדש/ה בתוך הארגון שלך — זרימה זמנית, עד שתיבנה מערכת הזמנות מלאה",
+    "name": "שם מלא",
+    "email": "אימייל",
+    "roleEmployee": "עובד/ת",
+    "roleBranchManager": "מנהל/ת סניף",
+    "selectBranch": "בחר/י סניף...",
+    "tempPassword": "סיסמה זמנית",
+    "submit": "יצירת חבר/ת צוות",
+    "submitting": "יוצר/ת...",
+    "missingFields": "יש למלא את כל השדות",
+    "invalidRole": "תפקיד לא תקין",
+    "invalidBranch": "סניף לא תקין",
+    "passwordTooShort": "הסיסמה חייבת להכיל לפחות 8 תווים",
+    "emailTaken": "כתובת האימייל כבר בשימוש",
+    "forbidden": "אין לך הרשאה לפעולה זו",
+    "createdSuccess": "חבר/ת הצוות נוצר/ה בהצלחה"
+  },
   "branch": {
     "title": "דשבורד מנהל סניף",
     "subtitle": "משימות, מלאי ומכירות עבור הסניף שלך",

@@ -69,6 +69,26 @@
     "managersTitle": "Manager tracking",
     "managersSubtitle": "Branch managers' activity and their branch's performance data"
   },
+  "team": {
+    "addTeamMember": "Add team member",
+    "newTitle": "Add team member",
+    "newSubtitle": "Create a new user inside your organization — a temporary flow until a full invitation system is built",
+    "name": "Full name",
+    "email": "Email",
+    "roleEmployee": "Employee",
+    "roleBranchManager": "Branch Manager",
+    "selectBranch": "Select a branch...",
+    "tempPassword": "Temporary password",
+    "submit": "Create team member",
+    "submitting": "Creating...",
+    "missingFields": "Please fill in all fields",
+    "invalidRole": "Invalid role",
+    "invalidBranch": "Invalid branch",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "emailTaken": "This email is already in use",
+    "forbidden": "You don't have permission for this action",
+    "createdSuccess": "Team member created successfully"
+  },
   "branch": {
     "title": "Branch Manager Dashboard",
     "subtitle": "Tasks, inventory and sales for your branch",
