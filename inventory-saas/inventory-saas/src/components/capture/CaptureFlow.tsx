@@ -89,6 +89,8 @@ export function CaptureFlow({
 
   function errorText(message: string): string {
     if (message === "missing_photo") return t("missingPhoto");
+    if (message === "invalid_photo_type") return t("invalidPhotoType");
+    if (message === "photo_too_large") return t("photoTooLarge");
     if (message === "missing_quantity") return t("missingQuantity");
     if (message === "missing_waste_reason") return t("missingWasteReason");
     if (message === "invalid_date") return t("invalidDate");

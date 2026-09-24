@@ -63,8 +63,9 @@ async function toBase64Image(
   absolutePathOrUrl: string
 ): Promise<{ base64: string; mediaType: string } | null> {
   try {
-    // תמונות רפרנס נשמרות באותה תיקיית uploads (ראו src/lib/storage/local.ts) —
-    // אם בעתיד יגיעו מ-URL חיצוני (למשל אחרי מעבר ל-S3/R2), אפשר להוסיף כאן fetch().
+    // מסלול לא פעיל כרגע: אין שום זרימה שכותבת reference_photo_url, אז הוא תמיד null.
+    // אם תיבנה העלאת תמונות רפרנס, היא צריכה לעבור דרך src/lib/storage (R2), ופה
+    // להחליף את הקריאה מהדיסק ב-fetch של URL חתום.
     if (!absolutePathOrUrl.startsWith("/")) return null;
     const path = await import("node:path");
     const fullPath = path.join(process.cwd(), "public", absolutePathOrUrl);
@@ -79,7 +80,7 @@ async function toBase64Image(
 }
 
 export async function classifyProductPhoto(
-  photoAbsolutePath: string,
+  photoBytes: Buffer,
   photoMimeType: string,
   products: ClassifiableProduct[],
   options: { detectExpiryLabel: boolean } = { detectExpiryLabel: false }
@@ -97,7 +98,6 @@ export async function classifyProductPhoto(
   }
 
   try {
-    const photoBytes = await readFile(photoAbsolutePath);
     const photoBase64 = photoBytes.toString("base64");
 
     const catalogLines = products

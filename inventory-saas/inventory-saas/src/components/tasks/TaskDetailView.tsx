@@ -37,6 +37,7 @@ export function TaskDetailView({
   canStart,
   canComplete,
   canOverride = false,
+  proofPhotoSignedUrl = null,
   startAction,
   completeAction,
   overrideAction,
@@ -48,6 +49,8 @@ export function TaskDetailView({
   canStart: boolean;
   canComplete: boolean;
   canOverride?: boolean;
+  /** URL חתום קצר-טווח שנוצר בשרת אחרי בדיקת הרשאה (task.proofPhotoUrl הוא רק מפתח אובייקט, לא ניתן לתצוגה ישירה) */
+  proofPhotoSignedUrl?: string | null;
   startAction?: (formData: FormData) => Promise<void>;
   completeAction?: (formData: FormData) => Promise<void>;
   overrideAction?: (formData: FormData) => Promise<void>;
@@ -133,10 +136,10 @@ export function TaskDetailView({
               <p className="text-sm text-brand-text/80">{task.completionNotes}</p>
             </>
           ) : null}
-          {task.proofPhotoUrl ? (
+          {proofPhotoSignedUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- תמונת הוכחה שהועלתה דינמית, לא asset סטטי
             <img
-              src={task.proofPhotoUrl}
+              src={proofPhotoSignedUrl}
               alt=""
               className="mt-3 max-h-64 rounded-lg object-cover"
             />

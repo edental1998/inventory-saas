@@ -175,6 +175,8 @@
     "submit": "Submit",
     "submitting": "Uploading and identifying...",
     "missingPhoto": "Please take a photo first",
+    "invalidPhotoType": "Unsupported file type — please attach an image (JPG/PNG/WebP/HEIC)",
+    "photoTooLarge": "Photo is too large (max 10MB)",
     "missingQuantity": "Please enter a quantity",
     "missingWasteReason": "Please choose a reason for the disposal",
     "genericError": "Something went wrong, please try again",

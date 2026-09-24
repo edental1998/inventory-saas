@@ -11,18 +11,27 @@ import {
   toggleChecklistItem as toggleChecklistItemQuery,
 } from "@/lib/data/tasks";
 import { query } from "@/lib/db";
-import { saveUploadedImage } from "@/lib/storage/local";
+import { saveUploadedImage, validateUploadedFile } from "@/lib/storage";
 
-/** מחלץ תמונת הוכחה מה-FormData אם צורפה (אותה מוסכמה כמו src/lib/actions/captures.ts) */
-async function extractProofPhotoUrl(
+type ProofPhotoResult =
+  | { ok: true; key: string | null }
+  | { ok: false };
+
+/**
+ * מחלץ ומעלה תמונת הוכחה מה-FormData אם צורפה. מחזיר את מפתח האובייקט (מה
+ * שנשמר ב-proof_photo_url) — לא URL. קובץ לא תקין (סוג/גודל) נדחה: ok=false,
+ * והפעולה הקוראת מפסיקה — לא ממשיכה "בלי תמונה" בשקט כשכן נשלחה תמונה.
+ */
+async function extractProofPhotoKey(
   formData: FormData,
   organizationId: string,
   branchId: string
-): Promise<string | null> {
+): Promise<ProofPhotoResult> {
   const photo = formData.get("photo");
-  if (!(photo instanceof File) || photo.size === 0) return null;
+  if (!(photo instanceof File) || photo.size === 0) return { ok: true, key: null };
+  if (validateUploadedFile(photo)) return { ok: false };
   const saved = await saveUploadedImage(photo, organizationId, branchId);
-  return saved.url;
+  return { ok: true, key: saved.key };
 }
 
 /**
@@ -93,11 +102,13 @@ export async function completeTaskAction(formData: FormData): Promise<void> {
   if (ownership.status === "DONE") return;
 
   const notes = String(formData.get("notes") ?? "").trim() || null;
-  const proofPhotoUrl = await extractProofPhotoUrl(
+  const proof = await extractProofPhotoKey(
     formData,
     ownership.organizationId,
     ownership.branchId
   );
+  if (!proof.ok) return;
+  const proofPhotoUrl = proof.key;
   if (ownership.photoRequired && !proofPhotoUrl) return;
 
   await completeTaskQuery(taskId, session.userId, { notes, proofPhotoUrl });
@@ -127,11 +138,13 @@ export async function overrideCompleteTaskAction(formData: FormData): Promise<vo
   const notes = String(formData.get("notes") ?? "").trim();
   if (!notes) return;
 
-  const proofPhotoUrl = await extractProofPhotoUrl(
+  const proof = await extractProofPhotoKey(
     formData,
     ownership.organizationId,
     ownership.branchId
   );
+  if (!proof.ok) return;
+  const proofPhotoUrl = proof.key;
   if (ownership.photoRequired && !proofPhotoUrl) return;
 
   await completeTaskQuery(taskId, session.userId, { notes, proofPhotoUrl });

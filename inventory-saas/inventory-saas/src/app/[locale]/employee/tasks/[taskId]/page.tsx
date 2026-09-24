@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth/get-session";
 import { getTaskById } from "@/lib/data/tasks";
+import { getSignedPhotoUrl } from "@/lib/storage";
 import {
   startTaskAction,
   completeTaskAction,
@@ -24,6 +25,9 @@ export default async function EmployeeTaskDetailPage({
 
   const task = await getTaskById(taskId);
   if (!task || task.assignedToId !== session.userId) notFound();
+
+  // ה-URL החתום נוצר רק אחרי שבדיקת ההרשאה למעלה עברה
+  const proofPhotoSignedUrl = await getSignedPhotoUrl(task.proofPhotoUrl);
 
   const labels: TaskDetailLabels = {
     descriptionLabel: t("taskDetail.description"),
@@ -70,6 +74,7 @@ export default async function EmployeeTaskDetailPage({
         labels={labels}
         canStart
         canComplete
+        proofPhotoSignedUrl={proofPhotoSignedUrl}
         startAction={startTaskAction}
         completeAction={completeTaskAction}
         toggleChecklistAction={toggleChecklistItemAction}

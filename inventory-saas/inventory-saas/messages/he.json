@@ -175,6 +175,8 @@
     "submit": "שליחה",
     "submitting": "שולח ומזהה...",
     "missingPhoto": "יש לצלם תמונה קודם",
+    "invalidPhotoType": "סוג הקובץ אינו נתמך — יש לצרף תמונה (JPG/PNG/WebP/HEIC)",
+    "photoTooLarge": "התמונה גדולה מדי (מקסימום 10MB)",
     "missingQuantity": "יש להזין כמות",
     "missingWasteReason": "יש לבחור סיבת זריקה",
     "genericError": "משהו השתבש, נסו שוב",

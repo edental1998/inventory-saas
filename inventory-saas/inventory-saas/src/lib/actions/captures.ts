@@ -2,7 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth/get-session";
-import { saveUploadedImage } from "@/lib/storage/local";
+import {
+  saveUploadedImage,
+  validateUploadedFile,
+  getSignedPhotoUrl,
+} from "@/lib/storage";
 import {
   classifyProductPhoto,
   AUTO_CONFIRM_CONFIDENCE_THRESHOLD,
@@ -90,6 +94,13 @@ export async function captureProductAction(
   if (!(photo instanceof File) || photo.size === 0) {
     return { kind: "error", message: "missing_photo" };
   }
+  const photoRejection = validateUploadedFile(photo);
+  if (photoRejection === "invalid_type") {
+    return { kind: "error", message: "invalid_photo_type" };
+  }
+  if (photoRejection === "too_large") {
+    return { kind: "error", message: "photo_too_large" };
+  }
   const quantityRaw = formData.get("quantity");
   const quantity = quantityRaw ? Number(quantityRaw) : null;
   if (!quantity || quantity <= 0) {
@@ -103,12 +114,14 @@ export async function captureProductAction(
     return { kind: "error", message: "missing_waste_reason" };
   }
 
+  // saved.key הוא מפתח האובייקט ב-R2 — זה מה שנשמר ב-DB (בעמודות photo_url וכו'),
+  // לא URL. לצפייה מיידית ב-pending_review נוצר URL חתום קצר-טווח למטה.
   const saved = await saveUploadedImage(photo, session.organizationId, branchId);
   const capturedAt = new Date();
 
   const products = await getProductsForOrg(session.organizationId);
   const classification = await classifyProductPhoto(
-    saved.absolutePath,
+    saved.bytes,
     saved.mimeType,
     products.map((p) => ({
       id: p.id,
@@ -133,7 +146,7 @@ export async function captureProductAction(
         const captureId = await createCapture({
           branchId,
           eventType,
-          photoUrl: saved.url,
+          photoUrl: saved.key,
           capturedByUserId: session.userId,
           capturedAt,
           aiSuggestedProductId: best.productId,
@@ -163,14 +176,14 @@ export async function captureProductAction(
         quantity,
         capturedAt,
         performedByUserId: session.userId,
-        photoUrl: saved.url,
+        photoUrl: saved.key,
         wasteReason,
       });
       if (result) {
         await createCapture({
           branchId,
           eventType,
-          photoUrl: saved.url,
+          photoUrl: saved.key,
           capturedByUserId: session.userId,
           capturedAt,
           aiSuggestedProductId: best.productId,
@@ -204,7 +217,7 @@ export async function captureProductAction(
   const captureId = await createCapture({
     branchId,
     eventType,
-    photoUrl: saved.url,
+    photoUrl: saved.key,
     capturedByUserId: session.userId,
     capturedAt,
     aiSuggestedProductId: best?.productId ?? null,
@@ -231,7 +244,9 @@ export async function captureProductAction(
     kind: "pending_review",
     captureId,
     eventType,
-    photoUrl: saved.url,
+    // URL חתום קצר-טווח לתצוגה מיידית למי שהרגע צילם (כבר עבר את בדיקת ההרשאה
+    // בתחילת הפעולה) — ב-DB נשמר רק saved.key.
+    photoUrl: (await getSignedPhotoUrl(saved.key)) ?? "",
     candidates,
     allProducts: products.map((p) => ({ id: p.id, nameHe: p.nameHe, nameEn: p.nameEn })),
   };
