@@ -20,14 +20,25 @@ export interface SessionPayload {
   exp: number; // מועד תפוגה, מילישניות מאז epoch
 }
 
-function getAuthSecret(): string {
+/**
+ * הסוד לחתימת session ו-state של OAuth. בפרודקשן חסר/קצר מדי = כישלון סגור
+ * (זורק), כי סוד ברירת-מחדל ידוע מאפשר לזייף session של כל משתמש. ברירת
+ * המחדל הקבועה קיימת רק לפיתוח מקומי (NODE_ENV שאינו production).
+ */
+export function getAuthSecret(): string {
   const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    // רק לשלב הדמו: כדי שהאפליקציה תרוץ גם בלי להגדיר .env מראש.
-    // בפרודקשן חובה להגדיר AUTH_SECRET אמיתי וסודי (ראו .env.example).
-    return "dev-only-insecure-secret-change-me";
+  if (process.env.NODE_ENV === "production") {
+    if (!secret) {
+      throw new Error("AUTH_SECRET must be set in production");
+    }
+    // מסרבים רק לסוד חסר; סוד קצר מזהירים עליו ולא זורקים, כדי שהחלפת קוד
+    // לא תנתק בבת אחת את כל המשתמשים אם הערך הקיים ב-Render קצר.
+    if (secret.length < 32) {
+      console.warn("AUTH_SECRET is shorter than 32 characters - rotate it to a longer random value");
+    }
+    return secret;
   }
-  return secret;
+  return secret || "dev-only-insecure-secret-change-me";
 }
 
 function base64UrlEncode(bytes: Uint8Array): string {

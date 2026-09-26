@@ -1,4 +1,5 @@
 import "server-only";
+import { getAuthSecret } from "./session";
 
 /**
  * עזרי OAuth ל"התחברות עם Google" — Authorization Code flow ידני, בלי
@@ -47,9 +48,6 @@ function getGoogleClientSecret(): string {
   return value;
 }
 
-function getAuthSecret(): string {
-  return process.env.AUTH_SECRET ?? "dev-only-insecure-secret-change-me";
-}
 
 /**
  * מאחורי ה-proxy של Render, request.nextUrl.origin נפתר לכתובת הפנימית

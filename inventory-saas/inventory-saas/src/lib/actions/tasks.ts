@@ -11,7 +11,17 @@ import {
   toggleChecklistItem as toggleChecklistItemQuery,
 } from "@/lib/data/tasks";
 import { query } from "@/lib/db";
+import { getBranchForOrg } from "@/lib/data/branches";
+import { isUserInBranch } from "@/lib/data/users";
 import { saveUploadedImage, validateUploadedFile } from "@/lib/storage";
+
+const TASK_TYPES = [
+  "RECEIVE_DELIVERY",
+  "RESTOCK_SHELF",
+  "REMOVE_OLD_STOCK",
+  "CHECK_EXPIRY",
+  "CUSTOM",
+] as const;
 
 type ProofPhotoResult =
   | { ok: true; key: string | null }
@@ -179,18 +189,28 @@ export async function createTaskAction(
 ): Promise<void> {
   const session = await getSession();
   if (!session || session.role === "EMPLOYEE") return;
+  // מנהל סניף יוצר משימות רק בסניף שלו; והסניף (גם למנכ"ל) חייב להיות של
+  // הארגון של המשתמש — לא לסמוך על branchId שהגיע מהלקוח.
+  if (session.role === "BRANCH_MANAGER" && session.branchId !== branchId) return;
+  const branch = await getBranchForOrg(branchId, session.organizationId);
+  if (!branch) return;
 
   const title = String(formData.get("title") ?? "").trim();
-  const type = String(formData.get("type") ?? "CUSTOM");
+  const typeRaw = String(formData.get("type") ?? "CUSTOM");
+  const type = TASK_TYPES.includes(typeRaw as (typeof TASK_TYPES)[number])
+    ? typeRaw
+    : "CUSTOM";
   const assignedToIdRaw = String(formData.get("assignedToId") ?? "");
   const assignedToId = assignedToIdRaw || null;
 
   if (!title) return;
+  // המשויך/ת חייב/ת להיות משתמש/ת באותו סניף (ולכן גם באותו ארגון)
+  if (assignedToId && !(await isUserInBranch(assignedToId, branch.id))) return;
 
   await query(
     `insert into tasks (id, branch_id, type, title, assigned_to_id, created_by_id, due_at)
      values ($1, $2, $3, $4, $5, $6, now())`,
-    [randomUUID(), branchId, type, title, assignedToId, session.userId]
+    [randomUUID(), branch.id, type, title, assignedToId, session.userId]
   );
 
   revalidatePath("/", "layout");

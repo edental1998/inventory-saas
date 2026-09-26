@@ -243,3 +243,13 @@ alter table tasks add column if not exists completed_by_id text references users
 alter table tasks add column if not exists completion_notes text;
 alter table tasks add column if not exists description text;
 alter table tasks add column if not exists checklist jsonb;
+
+-- חשבונות הדמו שנזרעו (prisma/seed.ts) משתמשים בסיסמה ידועה ("demo1234").
+-- בפרודקשן הם פתח לכל אחד, אז מנטרלים את הסיסמה שלהם: password_hash=null
+-- חוסם כניסה עם סיסמה (ואין להם google_id). אידמפוטנטי; לא מוחק נתונים.
+-- להחזרת דמו מקומי: להריץ שוב `npm run db:seed` על מסד נקי.
+update users set password_hash = null
+where password_hash is not null
+  and organization_id in (
+    select id from organizations where slug in ('demo-bakery', 'demo-cafe')
+  );

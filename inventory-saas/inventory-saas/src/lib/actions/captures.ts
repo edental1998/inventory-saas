@@ -280,7 +280,10 @@ export async function confirmCaptureAction(
   }
 
   const product = await getProductById(productId);
-  if (!product) return { kind: "error", message: "unknown_product" };
+  // המוצר חייב להיות בקטלוג של הארגון — productId מגיע מהלקוח
+  if (!product || product.organizationId !== session.organizationId) {
+    return { kind: "error", message: "unknown_product" };
+  }
 
   const finalQuantity = quantity ?? capture.quantity;
 

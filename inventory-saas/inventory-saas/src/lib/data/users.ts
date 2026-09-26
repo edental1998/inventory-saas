@@ -84,6 +84,18 @@ export async function getBranchManager(
   return row ? mapBranchManagerRow(row) : null;
 }
 
+/** האם המשתמש משויך לסניף הזה — לאימות "שיוך ל" בשרת, לא לסמוך על ערך מהטופס */
+export async function isUserInBranch(
+  userId: string,
+  branchId: string
+): Promise<boolean> {
+  const { rows } = await query(
+    `select 1 from users where id = $1 and branch_id = $2`,
+    [userId, branchId]
+  );
+  return rows.length > 0;
+}
+
 export interface DemoAccount {
   email: string;
   name: string;

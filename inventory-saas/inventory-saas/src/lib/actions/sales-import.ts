@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth/get-session";
 import { query } from "@/lib/db";
-import { getBranchById } from "@/lib/data/branches";
+import { getBranchForOrg } from "@/lib/data/branches";
 import { findProductByName } from "@/lib/data/products";
 import { parseSalesCsv } from "@/lib/sales/csv-adapter";
 
@@ -33,7 +33,9 @@ export async function importSalesCsvAction(
     return { kind: "error", message: "not_authorized" };
   }
 
-  const branch = await getBranchById(branchId);
+  // הסניף חייב להשתייך לארגון של המשתמש — גם למנכ"ל, שאחרת יכול היה לכתוב
+  // מכירות לסניף של ארגון אחר עם branchId מזויף.
+  const branch = await getBranchForOrg(branchId, session.organizationId);
   if (!branch) return { kind: "error", message: "unknown_branch" };
 
   const file = formData.get("file");

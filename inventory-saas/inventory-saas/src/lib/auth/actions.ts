@@ -44,6 +44,9 @@ async function authenticate(
   if (!email || !password) return null;
   const user = await findUserByEmail(email);
   if (!user) return null;
+  // משתמש שנוצר דרך Google בלבד (או חשבון דמו מושבת) אין לו סיסמה מקומית —
+  // בלי הבדיקה הזו bcrypt.compare זורק על hash ריק במקום להחזיר "התחברות נכשלה".
+  if (!user.passwordHash) return null;
   const passwordMatches = await verifyPassword(password, user.passwordHash);
   return passwordMatches ? user : null;
 }
