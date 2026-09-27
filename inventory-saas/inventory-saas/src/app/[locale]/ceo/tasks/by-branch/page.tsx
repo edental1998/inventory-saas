@@ -27,12 +27,13 @@ export default async function CeoTasksByBranchPage({
   ]);
 
   const branches = await getBranchesForOrg(session.organizationId);
-  if (branches.length === 0) notFound();
+  const firstBranch = branches[0];
+  if (!firstBranch) notFound();
 
   const selectedBranchId =
     requestedBranchId && branches.some((b) => b.id === requestedBranchId)
       ? requestedBranchId
-      : branches[0].id;
+      : firstBranch.id;
 
   // וידוא שהסניף שייך לארגון של המנכ"ל — גם אם branchId הגיע ישירות מה-URL
   const branch = await getBranchForOrg(selectedBranchId, session.organizationId);
