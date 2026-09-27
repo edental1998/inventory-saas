@@ -1,5 +1,5 @@
 import { query } from "@/lib/db";
-import type { DbTask, TaskChecklistItem } from "./types";
+import type { DbTask, TaskChecklistItem, TaskPerformanceRow } from "./types";
 
 const TASK_SELECT = `
   select tsk.id, tsk.type, tsk.title, tsk.description, tsk.status, tsk.photo_required,
@@ -172,6 +172,44 @@ export async function reassignTask(
     taskId,
     assigneeId,
   ]);
+}
+
+/**
+ * ביצועי משימות לפי חבר/ת צוות, לכל הארגון — למסך "ביצועי עובדים" של המנכ"ל.
+ * נתונים גולמיים בלבד (הוקצו/הושלמו/הושלמו בזמן/באיחור), בלי ציון מסכם —
+ * לפי החלטה מפורשת שלא לבנות ניקוד סינתטי בלי נתוני שימוש אמיתיים לכיול.
+ * "באיחור" נגזר כמו בכל מקום אחר (due_at עבר, סטטוס לא DONE), לא מאוחסן.
+ */
+export async function getTaskPerformanceForOrg(
+  organizationId: string
+): Promise<TaskPerformanceRow[]> {
+  const { rows } = await query(
+    `select u.id as user_id, u.name as user_name, b.name as branch_name,
+       count(tsk.id) as assigned,
+       count(tsk.id) filter (where tsk.status = 'DONE') as completed,
+       count(tsk.id) filter (
+         where tsk.status = 'DONE' and tsk.due_at is not null and tsk.completed_at <= tsk.due_at
+       ) as completed_on_time,
+       count(tsk.id) filter (
+         where tsk.status <> 'DONE' and tsk.due_at is not null and tsk.due_at < now()
+       ) as overdue
+     from users u
+     join branches b on b.id = u.branch_id
+     left join tasks tsk on tsk.assigned_to_id = u.id
+     where b.organization_id = $1
+     group by u.id, u.name, b.name
+     order by b.name, u.name`,
+    [organizationId]
+  );
+  return rows.map((row) => ({
+    userId: row.user_id as string,
+    userName: row.user_name as string,
+    branchName: row.branch_name as string,
+    assigned: Number(row.assigned),
+    completed: Number(row.completed),
+    completedOnTime: Number(row.completed_on_time),
+    overdue: Number(row.overdue),
+  }));
 }
 
 /** מסמן/מבטל פריט ברשימת המשימות (checklist jsonb) לפי מזהה יציב, לא לפי אינדקס/תווית */

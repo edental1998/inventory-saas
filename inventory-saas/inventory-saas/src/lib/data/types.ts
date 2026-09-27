@@ -62,6 +62,16 @@ export interface DbBranchManager {
   branchName: string;
 }
 
+export interface TaskPerformanceRow {
+  userId: string;
+  userName: string;
+  branchName: string;
+  assigned: number;
+  completed: number;
+  completedOnTime: number;
+  overdue: number;
+}
+
 export interface OrgWithTheme {
   id: string;
   slug: string;
