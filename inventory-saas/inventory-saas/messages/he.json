@@ -97,6 +97,18 @@
     "expiryAlerts": "התראות תוקף",
     "inventoryOverview": "סקירת מלאי"
   },
+  "taskBoard": {
+    "title": "לוח משימות",
+    "subtitle": "כל המשימות בסניף, לפי סטטוס",
+    "all": "הכול",
+    "myTasksLink": "המשימות שלי",
+    "myTasksTitle": "המשימות שלי",
+    "backToBoard": "חזרה ללוח המשימות",
+    "checklistPlaceholder": "רשימת בדיקה (לא חובה) — שורה אחת לכל פריט",
+    "photoRequiredLabel": "נדרשת תמונה בסיום המשימה",
+    "reassignLabel": "שייך/י ל:",
+    "reassignButton": "עדכון שיוך"
+  },
   "employee": {
     "title": "היום שלי",
     "subtitle": "המשימות שלך להיום, לפי דחיפות",

@@ -96,18 +96,6 @@ export async function getTaskById(taskId: string): Promise<DbTask | null> {
 }
 
 /**
- * מסמן משימה כבוצעה. נשמר בפועל ב-DB (completed_at + status), לא רק בממשק.
- * ההרשאה (מי מותר לו לסמן איזו משימה) נבדקת ברמת ה-Server Action שקורא לפונקציה
- * הזו, לפני שהיא נקראת — כאן רק מבצעים את העדכון בפועל.
- */
-export async function markTaskDone(taskId: string): Promise<void> {
-  await query(
-    `update tasks set status = 'DONE', completed_at = now() where id = $1`,
-    [taskId]
-  );
-}
-
-/**
  * לבדיקת הרשאה לפני שינוי סטטוס: מי משויך למשימה, באיזה סניף היא, לאיזה
  * ארגון הסניף שייך, מה הסטטוס הנוכחי שלה והאם נדרשת תמונה — כדי שמנהל
  * רשת/סניף לא יוכל לפעול על משימה שמשויכת ל-organization/branch אחר לגמרי
@@ -173,6 +161,17 @@ export async function completeTask(
      where id = $1 and status <> 'DONE'`,
     [taskId, userId, opts.notes, opts.proofPhotoUrl]
   );
+}
+
+/** שיוך מחדש (או ביטול שיוך, assigneeId=null) — הרשאה נבדקת ב-Server Action הקורא */
+export async function reassignTask(
+  taskId: string,
+  assigneeId: string | null
+): Promise<void> {
+  await query(`update tasks set assigned_to_id = $2 where id = $1`, [
+    taskId,
+    assigneeId,
+  ]);
 }
 
 /** מסמן/מבטל פריט ברשימת המשימות (checklist jsonb) לפי מזהה יציב, לא לפי אינדקס/תווית */

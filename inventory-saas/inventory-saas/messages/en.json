@@ -97,6 +97,18 @@
     "expiryAlerts": "Expiry alerts",
     "inventoryOverview": "Inventory overview"
   },
+  "taskBoard": {
+    "title": "Task Board",
+    "subtitle": "All tasks in the branch, by status",
+    "all": "All",
+    "myTasksLink": "My Tasks",
+    "myTasksTitle": "My Tasks",
+    "backToBoard": "Back to Task Board",
+    "checklistPlaceholder": "Checklist (optional) - one item per line",
+    "photoRequiredLabel": "Photo required to complete this task",
+    "reassignLabel": "Assign to:",
+    "reassignButton": "Update assignment"
+  },
   "employee": {
     "title": "My Day",
     "subtitle": "Your tasks for today, by urgency",
