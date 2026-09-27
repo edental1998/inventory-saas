@@ -125,7 +125,7 @@ export default async function BranchTaskDetailPage({
         startAction={startTaskAction}
         completeAction={completeTaskAction}
         overrideAction={overrideCompleteTaskAction}
-        toggleChecklistAction={toggleChecklistItemAction}
+        toggleChecklistAction={isOwnTask ? toggleChecklistItemAction : undefined}
       />
     </div>
   );
