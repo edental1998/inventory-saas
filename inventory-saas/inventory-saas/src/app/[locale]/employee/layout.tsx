@@ -3,7 +3,14 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentTheme } from "@/lib/themes/current-theme";
 import { requireSession } from "@/lib/auth/get-session";
 import { DashboardShell } from "@/components/layout/DashboardShell";
+import type { SidebarNavItem } from "@/components/layout/Sidebar";
 
+/**
+ * ניווט העובד/ת (Slice 5) — שטוח לגמרי, בלי קבוצות (כך גם בתכנון). "המשימות
+ * שלי" (רשימה שטוחה נפרדת מ"היום שלי" המתוכנן) טרם נבנתה בפועל — disabled,
+ * לא "עמוד מזויף". "פסולת / השלכה" הוא אותו /employee/capture הקיים, רק
+ * בתווית ברורה יותר.
+ */
 export default async function EmployeeLayout({
   children,
   params,
@@ -18,6 +25,14 @@ export default async function EmployeeLayout({
     requireSession(locale),
   ]);
 
+  const navItems: SidebarNavItem[] = [
+    { type: "link", href: "/employee/dashboard", label: t("nav.myDay") },
+    { type: "disabled", label: t("nav.myTasks") },
+    { type: "disabled", label: t("nav.inventory") },
+    { type: "link", href: "/employee/capture", label: t("nav.wasteDisposal") },
+    { type: "disabled", label: t("nav.profile") },
+  ];
+
   return (
     <DashboardShell
       theme={theme}
@@ -28,10 +43,8 @@ export default async function EmployeeLayout({
       locale={locale}
       userName={session.name}
       signOutLabel={t("common.signOut")}
-      navItems={[
-        { href: "/employee/dashboard", label: t("nav.employeeDashboard") },
-        { href: "/employee/capture", label: t("nav.captureProduct") },
-      ]}
+      comingSoonLabel={t("nav.comingSoon")}
+      navItems={navItems}
     >
       {children}
     </DashboardShell>
