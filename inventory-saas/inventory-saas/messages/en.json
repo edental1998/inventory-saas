@@ -121,6 +121,8 @@
     "myTasksTitle": "My Tasks",
     "backToBoard": "Back to Task Board",
     "checklistPlaceholder": "Checklist (optional) - one item per line",
+    "dueDateLabel": "Due date (optional)",
+    "dueTimeLabel": "Due time",
     "photoRequiredLabel": "Photo required to complete this task",
     "reassignLabel": "Assign to:",
     "reassignButton": "Update assignment"

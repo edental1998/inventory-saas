@@ -28,9 +28,9 @@ export async function getBranchById(
 export async function getBranchForOrg(
   branchId: string,
   organizationId: string
-): Promise<{ id: string; name: string } | null> {
-  const { rows } = await query<{ id: string; name: string }>(
-    `select id, name from branches where id = $1 and organization_id = $2`,
+): Promise<{ id: string; name: string; timezone: string } | null> {
+  const { rows } = await query<{ id: string; name: string; timezone: string }>(
+    `select id, name, timezone from branches where id = $1 and organization_id = $2`,
     [branchId, organizationId]
   );
   return rows[0] ?? null;

@@ -121,6 +121,8 @@
     "myTasksTitle": "המשימות שלי",
     "backToBoard": "חזרה ללוח המשימות",
     "checklistPlaceholder": "רשימת בדיקה (לא חובה) — שורה אחת לכל פריט",
+    "dueDateLabel": "תאריך יעד (לא חובה)",
+    "dueTimeLabel": "שעת יעד",
     "photoRequiredLabel": "נדרשת תמונה בסיום המשימה",
     "reassignLabel": "שייך/י ל:",
     "reassignButton": "עדכון שיוך"

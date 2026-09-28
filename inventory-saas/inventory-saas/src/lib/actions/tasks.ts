@@ -45,6 +45,45 @@ async function extractProofPhotoKey(
   return { ok: true, key: saved.key };
 }
 
+type DueAtResult =
+  | { ok: true; date: string | null; time: string | null }
+  | { ok: false };
+
+/**
+ * מפענח ומאמת את שדות תאריך/שעת היעד מטופס יצירת המשימה (Slice 4.5).
+ * שני השדות ריקים = בלי יעד (due_at null, בדיוק כמו שכבר נתמך בתצוגה —
+ * ראו labels.noDue). רק אחד מהם מולא, או תאריך/שעה לא תקינים (למשל 30
+ * בפברואר, שעה 25:99) — נדחה (ok:false), לא נשמר "בטעות" עם ערך שגוי.
+ * הבדיקה כאן היא תקינות לוח-שנה גרידא; תרגום ה-timestamp האמיתי לפי אזור
+ * הזמן של הסניף נעשה ב-SQL (AT TIME ZONE), לא כאן.
+ */
+function parseDueAt(formData: FormData): DueAtResult {
+  const dateRaw = String(formData.get("dueDate") ?? "").trim();
+  const timeRaw = String(formData.get("dueTime") ?? "").trim();
+  if (!dateRaw && !timeRaw) return { ok: true, date: null, time: null };
+  if (!dateRaw || !timeRaw) return { ok: false };
+
+  const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateRaw);
+  const timeMatch = /^(\d{2}):(\d{2})$/.exec(timeRaw);
+  if (!dateMatch || !timeMatch) return { ok: false };
+
+  const year = Number(dateMatch[1]);
+  const month = Number(dateMatch[2]);
+  const day = Number(dateMatch[3]);
+  const hour = Number(timeMatch[1]);
+  const minute = Number(timeMatch[2]);
+  const roundTrip = new Date(Date.UTC(year, month - 1, day, hour, minute));
+  const valid =
+    roundTrip.getUTCFullYear() === year &&
+    roundTrip.getUTCMonth() === month - 1 &&
+    roundTrip.getUTCDate() === day &&
+    roundTrip.getUTCHours() === hour &&
+    roundTrip.getUTCMinutes() === minute;
+  if (!valid) return { ok: false };
+
+  return { ok: true, date: dateRaw, time: timeRaw };
+}
+
 /**
  * "התחל משימה" — רק מי שהמשימה משויכת אליו/ה (עובד/ת, או מנהל/ת סניף
  * שהמשימה הוקצתה אליו/ה אישית דרך "המשימות שלי"). בכוונה בלי חריג לפי
@@ -189,10 +228,18 @@ export async function createTaskAction(
   // המשויך/ת חייב/ת להיות משתמש/ת באותו סניף (ולכן גם באותו ארגון)
   if (assignedToId && !(await isUserInBranch(assignedToId, branch.id))) return;
 
+  const dueAt = parseDueAt(formData);
+  if (!dueAt.ok) return;
+
   await query(
     `insert into tasks
        (id, branch_id, type, title, description, checklist, photo_required, assigned_to_id, created_by_id, due_at)
-     values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, now())`,
+     values (
+       $1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9,
+       case when $10::text is not null
+            then ($10 || ' ' || $11)::timestamp at time zone $12
+            else null end
+     )`,
     [
       randomUUID(),
       branch.id,
@@ -203,6 +250,9 @@ export async function createTaskAction(
       photoRequired,
       assignedToId,
       session.userId,
+      dueAt.date,
+      dueAt.time,
+      branch.timezone,
     ]
   );
 

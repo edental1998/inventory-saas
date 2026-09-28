@@ -119,6 +119,26 @@ export default async function BranchTasksPage({
             </select>
           </div>
 
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="flex flex-col gap-1 text-xs text-brand-text/60">
+              {t("taskBoard.dueDateLabel")}
+              <input
+                type="date"
+                name="dueDate"
+                className="rounded-lg border border-black/10 px-3 py-2 text-sm text-brand-text"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs text-brand-text/60">
+              {t("taskBoard.dueTimeLabel")}
+              <input
+                type="time"
+                name="dueTime"
+                defaultValue="17:00"
+                className="rounded-lg border border-black/10 px-3 py-2 text-sm text-brand-text"
+              />
+            </label>
+          </div>
+
           <textarea
             name="description"
             placeholder={t("taskDetail.description")}
