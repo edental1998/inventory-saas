@@ -1,8 +1,10 @@
 import { getTranslations, getLocale } from "next-intl/server";
+import { AlertTriangle, Sun, CalendarClock, CheckCircle2, PartyPopper } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { TaskCard } from "@/components/ui/TaskCard";
 import { requireSession } from "@/lib/auth/get-session";
 import { getTasksForUserToday } from "@/lib/data/tasks";
+import { isTaskOverdue } from "@/lib/tasks/overdue";
 import type { DbTask } from "@/lib/data/types";
 
 function localDateStr(date: Date, timeZone: string): string {
@@ -10,11 +12,14 @@ function localDateStr(date: Date, timeZone: string): string {
 }
 
 /**
- * "היום שלי" — מסך הבית של העובד/ת (Slice 2 של שיפוץ הניווט). מחליף את
- * דשבורד המשימות השטוח הקודם בארבעה אזורים לפי דחיפות אמיתית, כולל "באיחור"
- * שמחושב מהמופע (due_at < עכשיו) ולא נשען על סטטוס OVERDUE מאוחסן (שאף קוד
- * לא כתב אליו בפועל — ראו תיעוד ה-migration). "היום"/"הושלמו היום" מחושבים
- * לפי היום העסקי-מקומי של הסניף (branchTimezone), לא לפי חצות UTC.
+ * "היום שלי" — מסך הבית של העובד/ת. Slice 11: חוויית עבודה ממוקדת-נייד,
+ * הרבה יותר פשוטה מהניסיון של מנהל/ת סניף/מנכ"ל בכוונה — לא "עוד דשבורד
+ * ניהולי". אותם 4 אזורי דחיפות בדיוק כמו קודם (Overdue/Needs Now/Upcoming/
+ * Completed Today), אותה שאילתה ואותה לוגיקת חלוקה (getTasksForUserToday +
+ * due_at מול "עכשיו" לפי אזור הזמן של הסניף) — רק העיצוב השתנה: כרטיסים
+ * גדולים וידידותיים למגע (TaskCard variant="large"), "באיחור" בולט אבל לא
+ * צועק על כל העמוד (טבעת אדומה דקה בלבד + ספירה ליד הכותרת, לא רקע אדום
+ * מלא), ומשימות שהושלמו "שקטות" חזותית (TaskCard variant="quiet").
  */
 export default async function EmployeeDashboardPage({
   params,
@@ -63,69 +68,87 @@ export default async function EmployeeDashboardPage({
 
   if (!hasAnyTasks) {
     return (
-      <div className="flex h-full items-center justify-center text-center text-lg text-brand-text/60">
-        {t("employee.noTasksToday")}
+      <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
+        <PartyPopper className="h-10 w-10 text-brand-primary" />
+        <p className="text-lg font-medium text-brand-text">{t("employee.noTasksToday")}</p>
       </div>
     );
   }
 
-  function taskList(list: DbTask[]) {
+  const dateFmt = (iso: string, timeZone: string) =>
+    new Intl.DateTimeFormat(locale === "he" ? "he-IL" : "en-US", {
+      dateStyle: "short",
+      timeStyle: "short",
+      timeZone,
+    }).format(new Date(iso));
+
+  function taskList(list: DbTask[], options?: { large?: boolean; quiet?: boolean }) {
     return (
-      <div className="flex flex-col gap-2">
-        {list.map((task) => (
-          <Link key={task.id} href={`/employee/tasks/${task.id}`} className="block">
-            <TaskCard
-              task={task}
-              typeLabel={t(`task.type.${task.type}`)}
-              statusLabel={t(`task.status.${task.status}`)}
-              assignedToLabel={
-                task.dueAt
-                  ? new Intl.DateTimeFormat(locale === "he" ? "he-IL" : "en-US", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                      timeZone: task.branchTimezone,
-                    }).format(new Date(task.dueAt))
-                  : undefined
-              }
-              photoLabel={t("employee.uploadPhoto")}
-            />
-          </Link>
-        ))}
+      <div className="flex flex-col gap-2.5">
+        {list.map((task) => {
+          const overdueNow = isTaskOverdue(task);
+          return (
+            <Link key={task.id} href={`/employee/tasks/${task.id}`} className="block">
+              <TaskCard
+                task={task}
+                typeLabel={t(`task.type.${task.type}`)}
+                statusLabel={t(`task.status.${task.status}`)}
+                overdueLabel={t("task.status.OVERDUE")}
+                isOverdue={overdueNow}
+                dueLabel={task.dueAt ? dateFmt(task.dueAt, task.branchTimezone) : undefined}
+                photoLabel={t("employee.uploadPhoto")}
+                large={options?.large}
+                quiet={options?.quiet}
+              />
+            </Link>
+          );
+        })}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-7">
       {overdue.length > 0 ? (
         <section>
-          <h2 className="mb-2 font-semibold text-danger">
+          <h2 className="mb-2.5 flex items-center gap-1.5 font-semibold text-danger">
+            <AlertTriangle className="h-4 w-4" />
             {t("myDay.overdue")}
+            <span className="text-sm font-normal text-danger/70">({overdue.length})</span>
           </h2>
-          {taskList(overdue)}
+          {taskList(overdue, { large: true })}
         </section>
       ) : null}
 
       <section>
-        <h2 className="mb-2 font-semibold text-brand-text">{t("myDay.needsNow")}</h2>
-        {needsNow.length > 0 ? taskList(needsNow) : (
-          <p className="text-sm text-brand-text/50">{t("myDay.noTasksInSection")}</p>
+        <h2 className="mb-2.5 flex items-center gap-1.5 font-semibold text-brand-text">
+          <Sun className="h-4 w-4 text-brand-text-muted" />
+          {t("myDay.needsNow")}
+        </h2>
+        {needsNow.length > 0 ? (
+          taskList(needsNow, { large: true })
+        ) : (
+          <p className="text-sm text-brand-text-muted">{t("myDay.noTasksInSection")}</p>
         )}
       </section>
 
       {upcoming.length > 0 ? (
         <section>
-          <h2 className="mb-2 font-semibold text-brand-text">{t("myDay.upcoming")}</h2>
+          <h2 className="mb-2.5 flex items-center gap-1.5 font-semibold text-brand-text">
+            <CalendarClock className="h-4 w-4 text-brand-text-muted" />
+            {t("myDay.upcoming")}
+          </h2>
           {taskList(upcoming)}
         </section>
       ) : null}
 
       {completedToday.length > 0 ? (
         <section>
-          <h2 className="mb-2 font-semibold text-brand-text">
+          <h2 className="mb-2.5 flex items-center gap-1.5 font-semibold text-brand-text-secondary">
+            <CheckCircle2 className="h-4 w-4 text-success" />
             {t("myDay.completedToday")}
           </h2>
-          {taskList(completedToday)}
+          {taskList(completedToday, { quiet: true })}
         </section>
       ) : null}
     </div>

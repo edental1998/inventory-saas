@@ -1,4 +1,6 @@
-/** טופס פשוט בלי אינטראקטיביות בצד לקוח — Server Action רגיל, כמו כפתור "סמן כבוצע" הקיים */
+import { Button } from "@/components/ui/Button";
+
+/** טופס פשוט בלי אינטראקטיביות בצד לקוח — Server Action רגיל. הפעולה הראשית: גדולה, מלאת-רוחב, בולטת */
 export function StartTaskForm({
   taskId,
   action,
@@ -11,12 +13,9 @@ export function StartTaskForm({
   return (
     <form action={action}>
       <input type="hidden" name="taskId" value={taskId} />
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-brand-primary px-4 py-3 text-sm font-medium text-brand-on-primary"
-      >
+      <Button type="submit" className="w-full py-3.5 text-base">
         {label}
-      </button>
+      </Button>
     </form>
   );
 }

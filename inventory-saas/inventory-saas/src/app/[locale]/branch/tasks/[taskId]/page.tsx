@@ -1,5 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { ArrowRight, UserCog } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth/get-session";
 import { getTaskById } from "@/lib/data/tasks";
@@ -13,12 +14,16 @@ import {
   reassignTaskAction,
 } from "@/lib/actions/tasks";
 import { TaskDetailView, type TaskDetailLabels } from "@/components/tasks/TaskDetailView";
+import { Card } from "@/components/ui/Card";
+import { Select } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 /**
  * פרטי משימה לתצוגת מנהל/ת סניף — אותו רכיב תצוגה משותף כמו העובד/ת
  * (Slice 2), רק עם מדיניות פעולות שונה: לא ניתן "להתחיל" משימה של מישהו/י
  * אחר/ת (canStart רק על המשימות של עצמו/ה), אבל ניתן לעקוף-להשלים עם הערה
- * חובה (canOverride), ולשייך מחדש בתוך הסניף בלבד.
+ * חובה (canOverride), ולשייך מחדש בתוך הסניף בלבד. Slice 10: רק עיצוב —
+ * כל ה-actions/הרשאות זהים ל-Slice 3.
  */
 export default async function BranchTaskDetailPage({
   params,
@@ -76,42 +81,48 @@ export default async function BranchTaskDetailPage({
       CHECK_EXPIRY: t("task.type.CHECK_EXPIRY"),
       CUSTOM: t("task.type.CUSTOM"),
     },
+    assigneeLabel: t("taskDetail.assigneeLabel"),
+    createdByLabel: t("taskDetail.createdByLabel"),
+    startedByLabel: t("taskDetail.startedByLabel"),
+    completedByActorLabel: t("taskDetail.completedByActorLabel"),
+    evidenceLabel: t("taskDetail.evidenceLabel"),
   };
 
   return (
     <div className="flex flex-col gap-4">
-      <Link href="/branch/tasks" className="text-sm text-brand-primary underline">
+      <Link
+        href="/branch/tasks"
+        className="flex items-center gap-1 text-sm font-medium text-brand-primary hover:underline"
+      >
+        <ArrowRight className="h-4 w-4 rtl:rotate-180" />
         {t("taskBoard.backToBoard")}
       </Link>
 
       {task.status !== "DONE" ? (
-        <form
-          action={reassignTaskAction}
-          className="flex flex-wrap items-center gap-2 rounded-xl bg-brand-surface p-4 shadow-sm ring-1 ring-black/5"
-        >
-          <input type="hidden" name="taskId" value={task.id} />
-          <label className="text-sm font-medium text-brand-text">
-            {t("taskBoard.reassignLabel")}
-          </label>
-          <select
-            name="assignedToId"
-            defaultValue={task.assignedToId ?? ""}
-            className="rounded-lg border border-black/10 px-3 py-2 text-sm"
-          >
-            <option value="">{t("task.assignedTo")}...</option>
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.id}>
-                {employee.name}
-              </option>
-            ))}
-          </select>
-          <button
-            type="submit"
-            className="rounded-lg bg-brand-primary px-3 py-2 text-xs font-medium text-brand-on-primary"
-          >
-            {t("taskBoard.reassignButton")}
-          </button>
-        </form>
+        <Card padding="sm">
+          <form action={reassignTaskAction} className="flex flex-wrap items-center gap-2">
+            <input type="hidden" name="taskId" value={task.id} />
+            <UserCog className="h-4 w-4 shrink-0 text-brand-text-muted" />
+            <label className="text-sm font-medium text-brand-text">
+              {t("taskBoard.reassignLabel")}
+            </label>
+            <Select
+              name="assignedToId"
+              defaultValue={task.assignedToId ?? ""}
+              className="w-auto min-w-[160px]"
+            >
+              <option value="">{t("task.assignedTo")}...</option>
+              {employees.map((employee) => (
+                <option key={employee.id} value={employee.id}>
+                  {employee.name}
+                </option>
+              ))}
+            </Select>
+            <Button type="submit" size="sm">
+              {t("taskBoard.reassignButton")}
+            </Button>
+          </form>
+        </Card>
       ) : null}
 
       <TaskDetailView

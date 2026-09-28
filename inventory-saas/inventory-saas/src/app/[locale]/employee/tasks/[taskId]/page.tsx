@@ -1,5 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth/get-session";
 import { getTaskById } from "@/lib/data/tasks";
@@ -60,11 +61,19 @@ export default async function EmployeeTaskDetailPage({
       CHECK_EXPIRY: t("task.type.CHECK_EXPIRY"),
       CUSTOM: t("task.type.CUSTOM"),
     },
+    createdByLabel: t("taskDetail.createdByLabel"),
+    startedByLabel: t("taskDetail.startedByLabel"),
+    completedByActorLabel: t("taskDetail.completedByActorLabel"),
+    evidenceLabel: t("taskDetail.evidenceLabel"),
   };
 
   return (
     <div className="flex flex-col gap-4">
-      <Link href="/employee/dashboard" className="text-sm text-brand-primary underline">
+      <Link
+        href="/employee/dashboard"
+        className="flex items-center gap-1 text-sm font-medium text-brand-primary hover:underline"
+      >
+        <ArrowRight className="h-4 w-4 rtl:rotate-180" />
         {t("taskDetail.back")}
       </Link>
 

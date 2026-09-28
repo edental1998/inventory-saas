@@ -189,7 +189,13 @@
     "missingPhoto": "A photo is required to complete this task",
     "missingNotes": "Please explain why when completing a task on someone else's behalf",
     "completedByOverride": "This task was completed by the branch manager, not by the person it was assigned to",
-    "completionNotesLabel": "Completion notes"
+    "completionNotesLabel": "Completion notes",
+    "assigneeLabel": "Assigned to",
+    "createdByLabel": "Created by",
+    "startedByLabel": "Started by",
+    "completedByActorLabel": "Completed by",
+    "readOnlyNotice": "Read only — you can't take action on this task",
+    "evidenceLabel": "Evidence"
   },
   "task": {
     "type": {

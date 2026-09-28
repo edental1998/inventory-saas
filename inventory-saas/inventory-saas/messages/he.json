@@ -189,7 +189,13 @@
     "missingPhoto": "יש לצרף תמונה כדי להשלים משימה זו",
     "missingNotes": "יש לפרט הערה כשמשלימים משימה בשם עובד/ת אחר/ת",
     "completedByOverride": "משימה זו הושלמה על ידי מנהל/ת הסניף, לא על ידי מי שהיא שויכה אליו/ה",
-    "completionNotesLabel": "הערות השלמה"
+    "completionNotesLabel": "הערות השלמה",
+    "assigneeLabel": "משויך/ת ל",
+    "createdByLabel": "נוצרה על ידי",
+    "startedByLabel": "התחילו",
+    "completedByActorLabel": "הושלמה על ידי",
+    "readOnlyNotice": "תצוגה בלבד — אין באפשרותך לבצע פעולות במשימה זו",
+    "evidenceLabel": "תיעוד"
   },
   "task": {
     "type": {

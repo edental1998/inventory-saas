@@ -29,16 +29,16 @@ export function ChecklistItem({
   }
 
   return (
-    <label className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-black/5">
+    <label className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-black/5">
       <input
         type="checkbox"
         checked={done}
         disabled={isPending}
         onChange={toggle}
-        className="h-4 w-4 rounded border-black/20"
+        className="h-4 w-4 rounded border-brand-border text-brand-primary accent-brand-primary"
       />
       <span
-        className={done ? "text-sm text-brand-text/50 line-through" : "text-sm text-brand-text"}
+        className={done ? "text-sm text-brand-text-muted line-through" : "text-sm text-brand-text"}
       >
         {item.label}
       </span>

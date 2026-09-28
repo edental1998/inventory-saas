@@ -30,10 +30,14 @@ export interface DbTask {
   dueAt: string | null;
   startedAt: string | null;
   startedById: string | null;
+  startedByName: string | null;
   completedAt: string | null;
   completedById: string | null;
+  completedByName: string | null;
   completionNotes: string | null;
   checklist: TaskChecklistItem[] | null;
+  createdById: string | null;
+  createdByName: string | null;
 }
 
 export interface DbExpiryAlert {

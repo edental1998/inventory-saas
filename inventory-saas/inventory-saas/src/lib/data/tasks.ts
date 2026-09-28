@@ -1,15 +1,27 @@
 import { query } from "@/lib/db";
 import type { DbTask, TaskChecklistItem, TaskPerformanceRow } from "./types";
 
+/**
+ * שלושת ה-LEFT JOIN הנוספים (started_by/completed_by/creator) הם תוספת
+ * קריאה-בלבד — לא כותבים דרכם לשום מקום, רק חושפים שם לתצוגת "מי עשה מה"
+ * בעמוד הפרטים (Slice 10), במקום רק ה-ID שכבר היה קיים. לא שינוי התנהגות.
+ */
 const TASK_SELECT = `
   select tsk.id, tsk.type, tsk.title, tsk.description, tsk.status, tsk.photo_required,
          tsk.proof_photo_url, tsk.due_at, tsk.started_at, tsk.started_by_id,
-         tsk.completed_at, tsk.completed_by_id, tsk.completion_notes, tsk.checklist,
+         started_by.name as started_by_name,
+         tsk.completed_at, tsk.completed_by_id,
+         completed_by.name as completed_by_name,
+         tsk.completion_notes, tsk.checklist,
          tsk.assigned_to_id, u.name as assigned_to_name,
+         tsk.created_by_id, creator.name as created_by_name,
          tsk.branch_id, b.name as branch_name, b.timezone as branch_timezone
   from tasks tsk
   join branches b on b.id = tsk.branch_id
   left join users u on u.id = tsk.assigned_to_id
+  left join users started_by on started_by.id = tsk.started_by_id
+  left join users completed_by on completed_by.id = tsk.completed_by_id
+  left join users creator on creator.id = tsk.created_by_id
 `;
 
 const STATUS_ORDER = `case tsk.status
@@ -35,10 +47,14 @@ function mapTaskRow(row: Record<string, unknown>): DbTask {
     dueAt: row.due_at ? new Date(row.due_at as string).toISOString() : null,
     startedAt: row.started_at ? new Date(row.started_at as string).toISOString() : null,
     startedById: (row.started_by_id as string | null) ?? null,
+    startedByName: (row.started_by_name as string | null) ?? null,
     completedAt: row.completed_at ? new Date(row.completed_at as string).toISOString() : null,
     completedById: (row.completed_by_id as string | null) ?? null,
+    completedByName: (row.completed_by_name as string | null) ?? null,
     completionNotes: (row.completion_notes as string | null) ?? null,
     checklist: (row.checklist as TaskChecklistItem[] | null) ?? null,
+    createdById: (row.created_by_id as string | null) ?? null,
+    createdByName: (row.created_by_name as string | null) ?? null,
   };
 }
 

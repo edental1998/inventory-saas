@@ -1,5 +1,6 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { Plus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { requireSession } from "@/lib/auth/get-session";
 import { getBranchById } from "@/lib/data/branches";
@@ -7,6 +8,9 @@ import { getTasksForBranch } from "@/lib/data/tasks";
 import { getBranchEmployees } from "@/lib/data/users";
 import { createTaskAction } from "@/lib/actions/tasks";
 import { TaskBoardTabs, type TaskBoardLabels } from "@/components/tasks/TaskBoardTabs";
+import { Card } from "@/components/ui/Card";
+import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Button, buttonClasses } from "@/components/ui/Button";
 
 const TASK_TYPES = [
   "RECEIVE_DELIVERY",
@@ -17,9 +21,9 @@ const TASK_TYPES = [
 ] as const;
 
 /**
- * לוח המשימות של מנהל/ת הסניף (Slice 3) — עמוד אחד עם טאבים בתוכו, לא חמישה
- * ניתובים נפרדים (ראו התכנון). טופס היצירה מרחיב את זה שהיה קיים: עכשיו
- * גם description/checklist/photo_required, לא רק כותרת+סוג+שיוך.
+ * לוח המשימות של מנהל/ת הסניף — עמוד אחד עם טאבים בתוכו, לא חמישה ניתובים
+ * נפרדים. Slice 10: רק עיצוב — כל שדות הטופס (שם/action) זהים ל-Slice 3,
+ * רק העטיפה החזותית (primitives, Card, spacing) השתנתה.
  */
 export default async function BranchTasksPage({
   params,
@@ -27,8 +31,9 @@ export default async function BranchTasksPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const [t, session] = await Promise.all([
+  const [t, uiLocale, session] = await Promise.all([
     getTranslations(),
+    getLocale(),
     requireSession(locale),
   ]);
 
@@ -52,6 +57,7 @@ export default async function BranchTasksPage({
     done: t("task.status.DONE"),
     empty: t("ceo.noTasks"),
     assignedToPrefix: t("task.assignedTo"),
+    photoLabel: t("employee.uploadPhoto"),
     typeLabels: {
       RECEIVE_DELIVERY: t("task.type.RECEIVE_DELIVERY"),
       RESTOCK_SHELF: t("task.type.RESTOCK_SHELF"),
@@ -72,102 +78,84 @@ export default async function BranchTasksPage({
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-bold text-brand-text">{t("taskBoard.title")}</h1>
-          <p className="text-sm text-brand-text/60">{t("taskBoard.subtitle")}</p>
+          <p className="text-sm text-brand-text-secondary">{t("taskBoard.subtitle")}</p>
         </div>
-        <Link
-          href="/branch/tasks/mine"
-          className="shrink-0 rounded-lg border border-black/10 px-4 py-2 text-sm font-medium text-brand-text hover:bg-black/5"
-        >
+        <Link href="/branch/tasks/mine" className={buttonClasses("secondary", "sm", "shrink-0")}>
           {t("taskBoard.myTasksLink")}
         </Link>
       </div>
 
-      <details className="rounded-xl bg-brand-surface p-4 shadow-sm ring-1 ring-black/5">
-        <summary className="cursor-pointer font-medium text-brand-text">
-          + {t("branch.createTask")}
-        </summary>
-        <form action={boundCreateTask} className="mt-4 flex flex-col gap-3">
-          <div className="flex flex-wrap gap-3">
-            <input
-              name="title"
-              required
-              placeholder={t("branch.createTask")}
-              className="min-w-[200px] flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm"
-            />
-            <select
-              name="type"
-              className="rounded-lg border border-black/10 px-3 py-2 text-sm"
-              defaultValue="CUSTOM"
-            >
-              {TASK_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {t(`task.type.${type}`)}
-                </option>
-              ))}
-            </select>
-            <select
-              name="assignedToId"
-              className="rounded-lg border border-black/10 px-3 py-2 text-sm"
-              defaultValue=""
-            >
-              <option value="">{t("task.assignedTo")}...</option>
-              {employees.map((employee) => (
-                <option key={employee.id} value={employee.id}>
-                  {employee.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex flex-wrap items-end gap-3">
-            <label className="flex flex-col gap-1 text-xs text-brand-text/60">
-              {t("taskBoard.dueDateLabel")}
-              <input
-                type="date"
-                name="dueDate"
-                className="rounded-lg border border-black/10 px-3 py-2 text-sm text-brand-text"
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-xs text-brand-text/60">
-              {t("taskBoard.dueTimeLabel")}
-              <input
-                type="time"
-                name="dueTime"
-                defaultValue="17:00"
-                className="rounded-lg border border-black/10 px-3 py-2 text-sm text-brand-text"
-              />
-            </label>
-          </div>
-
-          <textarea
-            name="description"
-            placeholder={t("taskDetail.description")}
-            rows={2}
-            className="rounded-lg border border-black/10 px-3 py-2 text-sm"
-          />
-
-          <textarea
-            name="checklist"
-            placeholder={t("taskBoard.checklistPlaceholder")}
-            rows={3}
-            className="rounded-lg border border-black/10 px-3 py-2 text-sm"
-          />
-
-          <label className="flex items-center gap-2 text-sm text-brand-text">
-            <input type="checkbox" name="photoRequired" className="h-4 w-4 rounded border-black/20" />
-            {t("taskBoard.photoRequiredLabel")}
-          </label>
-
-          <button
-            type="submit"
-            className="self-start rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-brand-on-primary"
-          >
+      <Card padding="none">
+        <details className="group">
+          <summary className="flex cursor-pointer list-none items-center gap-2 p-4 font-medium text-brand-text">
+            <Plus className="h-4 w-4 text-brand-primary transition-transform group-open:rotate-45" />
             {t("branch.createTask")}
-          </button>
-        </form>
-      </details>
+          </summary>
+          <form action={boundCreateTask} className="flex flex-col gap-3 border-t border-brand-border p-4">
+            <div className="flex flex-wrap gap-3">
+              <Input
+                name="title"
+                required
+                placeholder={t("branch.createTask")}
+                className="min-w-[200px] flex-1"
+              />
+              <Select name="type" className="w-auto" defaultValue="CUSTOM">
+                {TASK_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {t(`task.type.${type}`)}
+                  </option>
+                ))}
+              </Select>
+              <Select name="assignedToId" className="w-auto" defaultValue="">
+                <option value="">{t("task.assignedTo")}...</option>
+                {employees.map((employee) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
 
-      <TaskBoardTabs tasks={tasks} basePath="/branch/tasks" labels={labels} />
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="flex flex-col gap-1 text-xs text-brand-text-secondary">
+                {t("taskBoard.dueDateLabel")}
+                <Input type="date" name="dueDate" className="w-auto" />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-brand-text-secondary">
+                {t("taskBoard.dueTimeLabel")}
+                <Input type="time" name="dueTime" defaultValue="17:00" className="w-auto" />
+              </label>
+            </div>
+
+            <Textarea
+              name="description"
+              placeholder={t("taskDetail.description")}
+              rows={2}
+            />
+
+            <Textarea
+              name="checklist"
+              placeholder={t("taskBoard.checklistPlaceholder")}
+              rows={3}
+            />
+
+            <label className="flex items-center gap-2 text-sm text-brand-text">
+              <input
+                type="checkbox"
+                name="photoRequired"
+                className="h-4 w-4 rounded border-brand-border accent-brand-primary"
+              />
+              {t("taskBoard.photoRequiredLabel")}
+            </label>
+
+            <Button type="submit" className="self-start">
+              {t("branch.createTask")}
+            </Button>
+          </form>
+        </details>
+      </Card>
+
+      <TaskBoardTabs tasks={tasks} basePath="/branch/tasks" labels={labels} locale={uiLocale} />
     </div>
   );
 }

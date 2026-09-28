@@ -1,11 +1,16 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { clsx } from "clsx";
+import { Textarea } from "@/components/ui/Input";
 
 /**
  * טופס "השלם משימה" — משותף להשלמה עצמית ולעקיפת מנהל/ת (isOverride מוסיף
  * חובת הערה, ראו lib/actions/tasks.ts). אימות תמונה/הערה נעשה גם כאן (חוויה)
  * וגם בשרת (אכיפה אמיתית) — ראו completeTaskAction/overrideCompleteTaskAction.
+ * Slice 10: כפתור ההשלמה הרגילה נשאר ירוק (success, "פעולה ראשית" בולטת);
+ * העקיפה משתמשת בכפתור "secondary" מרוסן יותר — ההבחנה החזותית מהעטיפה
+ * ב-TaskDetailView (מסגרת מקווקוות) ומכאן משלימות זו את זו.
  */
 export function CompleteTaskForm({
   taskId,
@@ -63,12 +68,12 @@ export function CompleteTaskForm({
           {labels.notesLabel}
           {isOverride ? " *" : ""}
         </label>
-        <textarea
+        <Textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={labels.notesPlaceholder}
           rows={3}
-          className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm"
+          className="mt-1"
         />
       </div>
 
@@ -82,7 +87,7 @@ export function CompleteTaskForm({
           accept="image/*"
           capture="environment"
           onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
-          className="mt-1 block w-full text-sm text-brand-text/70"
+          className="mt-1 block w-full text-sm text-brand-text-secondary"
         />
       </div>
 
@@ -91,7 +96,12 @@ export function CompleteTaskForm({
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-lg bg-success px-4 py-3 text-sm font-medium text-white disabled:opacity-60"
+        className={clsx(
+          "rounded-lg px-4 py-3.5 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+          isOverride
+            ? "bg-brand-primary-soft text-brand-primary hover:bg-brand-primary-soft/70"
+            : "w-full bg-success text-white hover:bg-success/90"
+        )}
       >
         {isPending ? labels.submittingLabel : labels.submitLabel}
       </button>
