@@ -13,6 +13,7 @@ here anyway for traceability.
 |---|---|---|
 | `artisan-bread-basket.jpg` | Manish Jain | https://www.pexels.com/photo/artisanal-bread-basket-in-berlin-bakery-30926139/ |
 | `golden-croissants.jpg` | Muhammad Fawdy | https://www.pexels.com/photo/close-of-photo-of-croissants-13425794/ |
+| `latte-art-flatlay.jpg` | Ms Özkurt | https://www.pexels.com/photo/aesthetic-flat-lay-of-coffee-latte-art-35549066/ |
 
 Downloaded 2026-09-28 at 1600px width via the Pexels CDN (`images.pexels.com`).
 

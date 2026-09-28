@@ -101,7 +101,18 @@
     "performanceCompletionRate": "Completion %",
     "performanceOnTimeRate": "On-time %",
     "performanceOverdue": "Overdue",
-    "noEmployees": "No team members yet"
+    "noEmployees": "No team members yet",
+    "needsAttentionTitle": "Needs Attention",
+    "allClear": "Everything is on track",
+    "allClearHint": "No overdue tasks, alerts, or unassigned branches right now",
+    "overdueTasksCount": "{count} overdue tasks",
+    "branchesWithAlerts": "{count} branches with open alerts",
+    "branchesNoManager": "{count} branches without a manager",
+    "taskExecutionTitle": "Task Execution",
+    "recentActivityTitle": "Recent Activity",
+    "recentActivityEmpty": "No completed tasks yet",
+    "recentEvidenceTitle": "Recent Evidence",
+    "completedLabel": "Completed"
   },
   "team": {
     "addTeamMember": "Add team member",

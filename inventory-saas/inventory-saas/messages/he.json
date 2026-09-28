@@ -101,7 +101,18 @@
     "performanceCompletionRate": "אחוז השלמה",
     "performanceOnTimeRate": "אחוז בזמן",
     "performanceOverdue": "באיחור",
-    "noEmployees": "אין עדיין חברי צוות"
+    "noEmployees": "אין עדיין חברי צוות",
+    "needsAttentionTitle": "דורש תשומת לב",
+    "allClear": "הכול תקין",
+    "allClearHint": "אין כרגע משימות באיחור, התראות פתוחות או סניפים ללא מנהל/ת",
+    "overdueTasksCount": "{count} משימות באיחור",
+    "branchesWithAlerts": "{count} סניפים עם התראות פתוחות",
+    "branchesNoManager": "{count} סניפים ללא מנהל/ת",
+    "taskExecutionTitle": "ביצוע משימות",
+    "recentActivityTitle": "פעילות אחרונה",
+    "recentActivityEmpty": "אין עדיין משימות שהושלמו",
+    "recentEvidenceTitle": "תיעוד אחרון",
+    "completedLabel": "הושלם"
   },
   "team": {
     "addTeamMember": "הוספת חבר/ת צוות",

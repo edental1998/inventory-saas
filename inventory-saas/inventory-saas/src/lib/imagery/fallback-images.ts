@@ -11,6 +11,19 @@
 export const FALLBACK_IMAGERY = {
   /** פאנל הצד במסכי התחברות/הרשמה, כשלארגון אין login background משלו */
   auth: "/images/hospitality/artisan-bread-basket.jpg",
-  /** רקע ויזואלי גנרי לכרטיס סניף, כל עוד אין תכונת תמונת-סניף ייעודית */
-  branchCard: "/images/hospitality/golden-croissants.jpg",
+  /**
+   * מאגר תמונות רקע לכרטיסי סניפים — יותר מתמונה אחת כדי שסניפים שונים
+   * לא ייראו זהים (ראו getBranchCardImage), בלי שדה תמונת-סניף בסכמה.
+   */
+  branchCards: [
+    "/images/hospitality/golden-croissants.jpg",
+    "/images/hospitality/latte-art-flatlay.jpg",
+    "/images/hospitality/artisan-bread-basket.jpg",
+  ],
 } as const;
+
+/** בוחר תמונת רקע לכרטיס סניף לפי אינדקס — דטרמיניסטי, בלי אחסון נוסף */
+export function getBranchCardImage(index: number): string {
+  const images = FALLBACK_IMAGERY.branchCards;
+  return images[index % images.length]!;
+}
