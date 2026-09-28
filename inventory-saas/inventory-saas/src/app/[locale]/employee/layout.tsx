@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
+import { Sun, ListChecks, Package, Trash2, User } from "lucide-react";
 import { getCurrentTheme } from "@/lib/themes/current-theme";
 import { requireSession } from "@/lib/auth/get-session";
 import { DashboardShell } from "@/components/layout/DashboardShell";
@@ -25,12 +26,23 @@ export default async function EmployeeLayout({
     requireSession(locale),
   ]);
 
+  const iconProps = { className: "h-[18px] w-[18px]" };
   const navItems: SidebarNavItem[] = [
-    { type: "link", href: "/employee/dashboard", label: t("nav.myDay") },
-    { type: "disabled", label: t("nav.myTasks") },
-    { type: "disabled", label: t("nav.inventory") },
-    { type: "link", href: "/employee/capture", label: t("nav.wasteDisposal") },
-    { type: "disabled", label: t("nav.profile") },
+    {
+      type: "link",
+      href: "/employee/dashboard",
+      label: t("nav.myDay"),
+      icon: <Sun {...iconProps} />,
+    },
+    { type: "disabled", label: t("nav.myTasks"), icon: <ListChecks {...iconProps} /> },
+    { type: "disabled", label: t("nav.inventory"), icon: <Package {...iconProps} /> },
+    {
+      type: "link",
+      href: "/employee/capture",
+      label: t("nav.wasteDisposal"),
+      icon: <Trash2 {...iconProps} />,
+    },
+    { type: "disabled", label: t("nav.profile"), icon: <User {...iconProps} /> },
   ];
 
   return (

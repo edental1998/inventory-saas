@@ -12,14 +12,14 @@ export function TopBar({
   actions: ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4 border-b border-black/5 bg-brand-surface px-6 py-4">
+    <header className="flex flex-wrap items-center justify-between gap-4 border-b border-brand-border bg-brand-surface px-6 py-4 md:px-8">
       <div>
         <p className="text-xs font-medium uppercase tracking-wide text-brand-accent">
           {roleLabel}
         </p>
         <h1 className="text-xl font-bold text-brand-text">{title}</h1>
         {subtitle ? (
-          <p className="text-sm text-brand-text/60">{subtitle}</p>
+          <p className="text-sm text-brand-text-secondary">{subtitle}</p>
         ) : null}
       </div>
       <div className="flex items-center gap-3">{actions}</div>

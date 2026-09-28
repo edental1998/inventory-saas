@@ -1,5 +1,14 @@
 import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
+import {
+  LayoutDashboard,
+  Store,
+  ListChecks,
+  UsersRound,
+  Users,
+  TrendingUp,
+  Package,
+} from "lucide-react";
 import { getCurrentTheme } from "@/lib/themes/current-theme";
 import { requireSession } from "@/lib/auth/get-session";
 import { DashboardShell } from "@/components/layout/DashboardShell";
@@ -27,11 +36,18 @@ export default async function CeoLayout({
   ]);
   const branches = await getBranchesForOrg(session.organizationId);
 
+  const iconProps = { className: "h-[18px] w-[18px]" };
   const navItems: SidebarNavItem[] = [
-    { type: "link", href: "/ceo/dashboard", label: t("nav.ceoDashboard") },
+    {
+      type: "link",
+      href: "/ceo/dashboard",
+      label: t("nav.ceoDashboard"),
+      icon: <LayoutDashboard {...iconProps} />,
+    },
     {
       type: "group",
       label: t("nav.branches"),
+      icon: <Store {...iconProps} />,
       children: branches.map((branch) => ({
         type: "link" as const,
         href: `/ceo/branches/${branch.id}`,
@@ -41,6 +57,7 @@ export default async function CeoLayout({
     {
       type: "group",
       label: t("nav.tasks"),
+      icon: <ListChecks {...iconProps} />,
       children: [
         { type: "link", href: "/ceo/tasks", label: t("nav.overview") },
         { type: "link", href: "/ceo/tasks/by-branch", label: t("nav.byBranch") },
@@ -51,11 +68,17 @@ export default async function CeoLayout({
         },
       ],
     },
-    { type: "link", href: "/ceo/managers", label: t("nav.managerTracking") },
-    { type: "disabled", label: t("nav.employees") },
+    {
+      type: "link",
+      href: "/ceo/managers",
+      label: t("nav.managerTracking"),
+      icon: <UsersRound {...iconProps} />,
+    },
+    { type: "disabled", label: t("nav.employees"), icon: <Users {...iconProps} /> },
     {
       type: "group",
       label: t("nav.sales"),
+      icon: <TrendingUp {...iconProps} />,
       children: [
         { type: "link", href: "/ceo/sales", label: t("nav.overview") },
         { type: "disabled", label: t("nav.byBranch") },
@@ -64,6 +87,7 @@ export default async function CeoLayout({
     {
       type: "group",
       label: t("nav.inventory"),
+      icon: <Package {...iconProps} />,
       children: [
         { type: "disabled", label: t("nav.overview") },
         { type: "disabled", label: t("nav.alerts") },

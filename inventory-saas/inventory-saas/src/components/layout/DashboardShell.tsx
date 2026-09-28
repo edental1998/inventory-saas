@@ -10,6 +10,10 @@ import { logoutAction } from "@/lib/auth/actions";
  * שלד משותף לשלושת הדשבורדים. כל דשבורד (הנהלה/סניף/עובד) מזין כאן רק את
  * פריטי הניווט והכותרות שלו — העיצוב, הלוגו, ה-RTL/LTR ומתג השפה זהים
  * בקוד ומגיעים אוטומטית מהמותג הפעיל (של המשתמש המחובר) ומהשפה הנבחרת.
+ *
+ * Slice 7: מי-אני/התנתקות עברו לתחתית ה-Sidebar (בלוק פרופיל קבוע, כמו
+ * ברוב מוצרי SaaS מודרניים) — ה-TopBar נשאר ממוקד בהקשר של העמוד עצמו
+ * (כותרת/תת-כותרת/שפה), לא עוד "כי יש מקום".
  */
 export function DashboardShell({
   theme,
@@ -48,31 +52,19 @@ export function DashboardShell({
           roleLabel={roleLabel}
           logoSrc={theme.logo.light}
           comingSoonLabel={comingSoonLabel}
+          userName={userName}
+          signOutLabel={signOutLabel}
+          signOutAction={boundLogout}
         />
         <div className="flex flex-1 flex-col">
           <TopBar
             title={title}
             subtitle={subtitle}
             roleLabel={roleLabel}
-            actions={
-              <>
-                <span className="hidden text-sm text-brand-text/60 sm:inline">
-                  {userName}
-                </span>
-                <LocaleSwitcher />
-                <form action={boundLogout}>
-                  <button
-                    type="submit"
-                    className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-brand-text/70 hover:bg-black/10"
-                  >
-                    {signOutLabel}
-                  </button>
-                </form>
-              </>
-            }
+            actions={<LocaleSwitcher />}
           />
           <main
-            className="flex-1 bg-brand-background p-6"
+            className="flex-1 bg-brand-background p-6 md:p-8"
             style={
               theme.backgroundImage.dashboard
                 ? {
@@ -87,7 +79,7 @@ export function DashboardShell({
           </main>
         </div>
       </div>
-      <PoweredByGestion className="border-t border-black/5 bg-brand-surface py-2" />
+      <PoweredByGestion className="border-t border-brand-border bg-brand-surface py-2" />
     </div>
   );
 }
