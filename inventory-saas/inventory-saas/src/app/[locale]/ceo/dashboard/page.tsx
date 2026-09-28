@@ -20,10 +20,12 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Avatar } from "@/components/ui/Avatar";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { requireSession } from "@/lib/auth/get-session";
 import { getBranchSummariesForOrg } from "@/lib/data/branches";
 import { getBranchManagersForOrg } from "@/lib/data/users";
 import { getTasksForOrg } from "@/lib/data/tasks";
+import { getDailySalesTrendForOrg } from "@/lib/data/sales-analytics";
 import type { DbTask } from "@/lib/data/types";
 import { getSignedPhotoUrl } from "@/lib/storage";
 import { getBranchCardImage } from "@/lib/imagery/fallback-images";
@@ -48,10 +50,11 @@ export default async function CeoDashboardPage({
     requireSession(paramLocale),
   ]);
 
-  const [branches, managers, tasks] = await Promise.all([
+  const [branches, managers, tasks, salesTrend] = await Promise.all([
     getBranchSummariesForOrg(session.organizationId),
     getBranchManagersForOrg(session.organizationId),
     getTasksForOrg(session.organizationId),
+    getDailySalesTrendForOrg(session.organizationId),
   ]);
 
   const managerByBranch = new Map(managers.map((m) => [m.branchId, m]));
@@ -119,40 +122,41 @@ export default async function CeoDashboardPage({
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {[
             {
-              icon: <CheckCircle2 />,
+              icon: <CheckCircle2 className="h-5 w-5" />,
               label: t("ceo.taskCompletionRate"),
               value: `${avgCompletion}%`,
               hint: `${branches.length} ${t("nav.branchDashboard")}`,
+              chip: "bg-brand-primary-soft text-brand-primary",
             },
             {
-              icon: <AlertTriangle />,
+              icon: <AlertTriangle className="h-5 w-5" />,
               label: t("ceo.openExpiryAlerts"),
               value: String(totalExpiryAlerts),
-              tone: totalExpiryAlerts > 0 ? "text-warning" : "text-success",
+              chip: totalExpiryAlerts > 0 ? "bg-warning/10 text-warning" : "bg-success/10 text-success",
             },
             {
-              icon: <TrendingUp />,
+              icon: <TrendingUp className="h-5 w-5" />,
               label: t("ceo.weeklySales"),
               value: currency.format(totalWeekly),
+              chip: "bg-success/10 text-success",
             },
             {
-              icon: <Wallet />,
+              icon: <Wallet className="h-5 w-5" />,
               label: t("ceo.monthlySales"),
               value: currency.format(totalMonthly),
+              chip: "bg-info/10 text-info",
             },
           ].map((kpi, i) => (
             <div
               key={i}
               className="flex items-center gap-3 p-4 lg:border-e lg:border-brand-border lg:last:border-e-0"
             >
-              <span className="shrink-0 text-brand-text-muted [&>svg]:h-5 [&>svg]:w-5">
+              <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${kpi.chip}`}>
                 {kpi.icon}
               </span>
               <div className="min-w-0">
                 <p className="truncate text-xs text-brand-text-secondary">{kpi.label}</p>
-                <p className={`text-xl font-bold text-brand-text ${kpi.tone ?? ""}`}>
-                  {kpi.value}
-                </p>
+                <p className="text-xl font-bold text-brand-text">{kpi.value}</p>
                 {kpi.hint ? (
                   <p className="truncate text-[11px] text-brand-text-muted">{kpi.hint}</p>
                 ) : null}
@@ -234,6 +238,23 @@ export default async function CeoDashboardPage({
         </Card>
       </div>
 
+      {/* מגמת מכירות — רק כשיש בפועל תנועת מכירות בארגון; אחרת מוסיפה גרף ריק
+          בלי תועלת. שימוש חוזר מלא ב-getDailySalesTrendForOrg/TrendLineChart
+          הקיימים (כבר בשימוש ב-/ceo/sales) — לא שאילתה/רכיב חדשים */}
+      {salesTrend.some((p) => p.revenue > 0) ? (
+        <Card>
+          <div className="mb-4 flex items-center gap-2">
+            <TrendingUp className="h-[18px] w-[18px] text-brand-text-muted" />
+            <h2 className="font-semibold text-brand-text">{t("ceo.salesTrendTitle")}</h2>
+          </div>
+          <TrendLineChart
+            points={salesTrend.map((p) => ({ date: p.date, value: p.revenue }))}
+            formatValue={(v) => currency.format(v)}
+            label={t("ceo.salesTrendTitle")}
+          />
+        </Card>
+      ) : null}
+
       {/* סקירת סניפים */}
       <div>
         <h2 className="mb-3 font-semibold text-brand-text">{t("ceo.branchLeaderboard")}</h2>
@@ -247,20 +268,21 @@ export default async function CeoDashboardPage({
                 <Link key={branch.id} href={`/ceo/branches/${branch.id}`} className="block">
                   <Card padding="none" className="overflow-hidden transition-shadow hover:shadow-md">
                     <div
-                      className="relative flex h-24 items-end justify-end bg-cover bg-center p-2"
+                      className="relative flex h-32 flex-col justify-between bg-cover bg-center p-3"
                       style={{ backgroundImage: `url(${getBranchCardImage(index)})` }}
                     >
-                      <div className="absolute inset-0 bg-black/20" />
-                      <div className="relative rounded-lg bg-white/90 p-1.5">
-                        <Store className="h-4 w-4 text-brand-primary" />
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-3 p-5">
-                      <div className="flex items-center justify-between gap-2">
-                        <h3 className="font-semibold text-brand-text">{branch.name}</h3>
+                      <div className="absolute inset-0 bg-black/35" />
+                      <div className="relative flex items-start justify-between">
+                        <div className="rounded-lg bg-white/90 p-1.5">
+                          <Store className="h-4 w-4 text-brand-primary" />
+                        </div>
                         <Badge tone="brand">{branch.taskCompletionRate}%</Badge>
                       </div>
-
+                      <h3 className="relative font-semibold text-white drop-shadow-sm">
+                        {branch.name}
+                      </h3>
+                    </div>
+                    <div className="flex flex-col gap-3 p-5">
                       {manager ? (
                         <div className="flex items-center gap-2">
                           <Avatar name={manager.name} size="sm" />

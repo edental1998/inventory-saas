@@ -5,13 +5,15 @@
     "hebrew": "Hebrew",
     "english": "English",
     "signOut": "Sign out",
-    "goToLogin": "Go straight to the login screen"
+    "goToLogin": "Go straight to the login screen",
+    "poweredBy": "Powered by"
   },
   "landing": {
     "subtitle": "Choose a chain to continue to login"
   },
   "login": {
     "title": "Sign in",
+    "tagline": "Real-time operations across every branch",
     "email": "Email",
     "password": "Password",
     "submit": "Sign in",
@@ -112,7 +114,8 @@
     "recentActivityTitle": "Recent Activity",
     "recentActivityEmpty": "No completed tasks yet",
     "recentEvidenceTitle": "Recent Evidence",
-    "completedLabel": "Completed"
+    "completedLabel": "Completed",
+    "salesTrendTitle": "Sales trend (30 days)"
   },
   "team": {
     "addTeamMember": "Add team member",

@@ -5,13 +5,15 @@
     "hebrew": "עברית",
     "english": "אנגלית",
     "signOut": "התנתקות",
-    "goToLogin": "מעבר ישיר למסך התחברות"
+    "goToLogin": "מעבר ישיר למסך התחברות",
+    "poweredBy": "Powered by"
   },
   "landing": {
     "subtitle": "בחר/י רשת כדי להמשיך להתחברות"
   },
   "login": {
     "title": "התחברות",
+    "tagline": "ניהול תפעולי בזמן אמת לכל סניפי הרשת",
     "email": "אימייל",
     "password": "סיסמה",
     "submit": "התחברות",
@@ -112,7 +114,8 @@
     "recentActivityTitle": "פעילות אחרונה",
     "recentActivityEmpty": "אין עדיין משימות שהושלמו",
     "recentEvidenceTitle": "תיעוד אחרון",
-    "completedLabel": "הושלם"
+    "completedLabel": "הושלם",
+    "salesTrendTitle": "מגמת מכירות (30 יום)"
   },
   "team": {
     "addTeamMember": "הוספת חבר/ת צוות",
