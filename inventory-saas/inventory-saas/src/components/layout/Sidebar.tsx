@@ -15,15 +15,35 @@ export type SidebarNavChild =
   | { type: "link"; href: string; label: string }
   | { type: "disabled"; label: string };
 
-/** התאמה גם לנתיבי-בת (למשל /branch/tasks/abc123) לא רק להתאמה מדויקת */
-function isPathActive(pathname: string, href: string): boolean {
-  return pathname === href || pathname.startsWith(href + "/");
+/**
+ * בוחר עבור pathname נתון את ה-href התואם הארוך/הספציפי ביותר מבין כל
+ * הקישורים בניווט (כולל ילדי קבוצות) — לא סתם "כל prefix תואם=פעיל".
+ * זה מונע באג של שני אחים שחולקים prefix (למשל /ceo/tasks ו-
+ * /ceo/tasks/by-branch) מודגשים שניהם בו-זמנית: /ceo/tasks/by-branch
+ * תמיד "תנצח" את /ceo/tasks כשה-pathname הוא באמת /ceo/tasks/by-branch,
+ * בעוד שדף פרטים כמו /ceo/tasks/abc123 עדיין יתאים רק ל-/ceo/tasks
+ * (אין קישור ספציפי יותר לו בניווט).
+ */
+function collectLinkHrefs(items: SidebarNavItem[]): string[] {
+  const hrefs: string[] = [];
+  for (const item of items) {
+    if (item.type === "link") hrefs.push(item.href);
+    if (item.type === "group") {
+      for (const child of item.children) {
+        if (child.type === "link") hrefs.push(child.href);
+      }
+    }
+  }
+  return hrefs;
 }
 
-function isGroupActive(pathname: string, children: SidebarNavChild[]): boolean {
-  return children.some(
-    (child) => child.type === "link" && isPathActive(pathname, child.href)
-  );
+function computeActiveHref(pathname: string, hrefs: string[]): string | null {
+  let best: string | null = null;
+  for (const href of hrefs) {
+    const matches = pathname === href || pathname.startsWith(href + "/");
+    if (matches && (!best || href.length > best.length)) best = href;
+  }
+  return best;
 }
 
 /**
@@ -33,12 +53,12 @@ function isGroupActive(pathname: string, children: SidebarNavChild[]): boolean {
  */
 function NavLinkRow({
   item,
-  pathname,
+  activeHref,
   comingSoonLabel,
   indent = false,
 }: {
   item: SidebarNavChild;
-  pathname: string;
+  activeHref: string | null;
   comingSoonLabel: string;
   indent?: boolean;
 }) {
@@ -59,7 +79,7 @@ function NavLinkRow({
     );
   }
 
-  const active = isPathActive(pathname, item.href);
+  const active = item.href === activeHref;
   return (
     <Link
       href={item.href}
@@ -79,15 +99,17 @@ function NavLinkRow({
 function NavGroup({
   label,
   navChildren,
-  pathname,
+  activeHref,
   comingSoonLabel,
 }: {
   label: string;
   navChildren: SidebarNavChild[];
-  pathname: string;
+  activeHref: string | null;
   comingSoonLabel: string;
 }) {
-  const active = isGroupActive(pathname, navChildren);
+  const active = navChildren.some(
+    (child) => child.type === "link" && child.href === activeHref
+  );
   const [open, setOpen] = useState(active);
   const hasRealLink = navChildren.some((child) => child.type === "link");
 
@@ -116,7 +138,7 @@ function NavGroup({
             <NavLinkRow
               key={child.type === "link" ? child.href : child.label}
               item={child}
-              pathname={pathname}
+              activeHref={activeHref}
               comingSoonLabel={comingSoonLabel}
               indent
             />
@@ -144,6 +166,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const activeHref = computeActiveHref(pathname, collectLinkHrefs(items));
 
   return (
     <aside className="flex w-full shrink-0 flex-col gap-4 border-b border-black/5 bg-brand-surface p-4 md:w-72 md:gap-6 md:border-b-0 md:border-e">
@@ -181,7 +204,7 @@ export function Sidebar({
                 key={item.label}
                 label={item.label}
                 navChildren={item.children}
-                pathname={pathname}
+                activeHref={activeHref}
                 comingSoonLabel={comingSoonLabel}
               />
             );
@@ -190,7 +213,7 @@ export function Sidebar({
             <NavLinkRow
               key={item.type === "link" ? item.href : item.label}
               item={item}
-              pathname={pathname}
+              activeHref={activeHref}
               comingSoonLabel={comingSoonLabel}
             />
           );
