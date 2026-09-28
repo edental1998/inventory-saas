@@ -3,6 +3,7 @@ import type { BrandTheme } from "@/lib/themes/types";
 import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
 import { PoweredByGestion } from "@/components/ui/GestionBranding";
 import { Card } from "@/components/ui/Card";
+import { FALLBACK_IMAGERY } from "@/lib/imagery/fallback-images";
 
 /**
  * מעטפת משותפת למסכי אימות (התחברות/הרשמה) — Slice 8. מחליפה את הרקע
@@ -32,21 +33,26 @@ export function AuthShell({
           </div>
         </div>
 
-        <div
-          className="hidden flex-1 items-center justify-center lg:flex"
-          style={{
-            backgroundColor: "var(--brand-color-primary-soft)",
-            backgroundImage: theme.backgroundImage.login
-              ? `url(${theme.backgroundImage.login})`
-              : undefined,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="flex flex-col items-center gap-3 text-center">
+        <div className="relative hidden flex-1 items-center justify-center overflow-hidden lg:flex">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${theme.backgroundImage.login ?? FALLBACK_IMAGERY.auth})`,
+            }}
+          />
+          {/* שכבת-על בצבע המותג — שומרת על ניגודיות קריאה ללוגו/שם בכל תמונה,
+              ומשלבת את התמונה הגנרית עם זהות הארגון במקום להציג אותה "נטו" */}
+          <div className="absolute inset-0 bg-brand-primary/55" />
+          <div className="relative flex flex-col items-center gap-3 text-center">
             {/* eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג */}
-            <img src={theme.logo.light} alt={theme.displayName} className="h-20 w-20 rounded-2xl shadow-lg" />
-            <p className="text-xl font-semibold text-brand-primary">{theme.displayName}</p>
+            <img
+              src={theme.logo.light}
+              alt={theme.displayName}
+              className="h-20 w-20 rounded-2xl shadow-lg ring-4 ring-white/20"
+            />
+            <p className="text-xl font-semibold text-white drop-shadow-sm">
+              {theme.displayName}
+            </p>
           </div>
         </div>
       </div>

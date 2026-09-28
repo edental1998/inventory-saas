@@ -18,6 +18,7 @@ import { getBranchSummariesForOrg } from "@/lib/data/branches";
 import { getBranchManagersForOrg } from "@/lib/data/users";
 import { getTasksForOrg } from "@/lib/data/tasks";
 import type { DbTask } from "@/lib/data/types";
+import { FALLBACK_IMAGERY } from "@/lib/imagery/fallback-images";
 
 /**
  * דשבורד המנכ"ל (Slice 9) — עונה על "איך העסק שלי מתפקד בכל הסניפים,
@@ -139,8 +140,14 @@ export default async function CeoDashboardPage({
               return (
                 <Link key={branch.id} href={`/ceo/branches/${branch.id}`} className="block">
                   <Card padding="none" className="overflow-hidden transition-shadow hover:shadow-md">
-                    <div className="flex h-24 items-center justify-center bg-brand-primary-soft">
-                      <Store className="h-9 w-9 text-brand-primary" />
+                    <div
+                      className="relative flex h-24 items-end justify-end bg-cover bg-center p-2"
+                      style={{ backgroundImage: `url(${FALLBACK_IMAGERY.branchCard})` }}
+                    >
+                      <div className="absolute inset-0 bg-brand-primary/35" />
+                      <div className="relative rounded-lg bg-white/90 p-1.5">
+                        <Store className="h-4 w-4 text-brand-primary" />
+                      </div>
                     </div>
                     <div className="flex flex-col gap-3 p-5">
                       <div className="flex items-center justify-between gap-2">
