@@ -40,9 +40,11 @@ export function AuthShell({
               backgroundImage: `url(${theme.backgroundImage.login ?? FALLBACK_IMAGERY.auth})`,
             }}
           />
-          {/* שכבת-על בצבע המותג — שומרת על ניגודיות קריאה ללוגו/שם בכל תמונה,
-              ומשלבת את התמונה הגנרית עם זהות הארגון במקום להציג אותה "נטו" */}
-          <div className="absolute inset-0 bg-brand-primary/55" />
+          {/* שכבת-על ניטרלית (לא בצבע המותג בכוונה): גוון שרירותי — במיוחד כחול/
+              סגול/ירוק — יוצר "מריחה" מוזרה מעל תמונת מזון חמה, ראו תיעוד
+              בדיקה. שחור שקוף שומר על התמונה קריאה ועל הלוגו/שם ניגודיים,
+              בלי תלות בצבע המותג הספציפי של הארגון */}
+          <div className="absolute inset-0 bg-black/45" />
           <div className="relative flex flex-col items-center gap-3 text-center">
             {/* eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג */}
             <img

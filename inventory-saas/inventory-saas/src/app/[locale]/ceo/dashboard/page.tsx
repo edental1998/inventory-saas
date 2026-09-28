@@ -144,7 +144,7 @@ export default async function CeoDashboardPage({
                       className="relative flex h-24 items-end justify-end bg-cover bg-center p-2"
                       style={{ backgroundImage: `url(${FALLBACK_IMAGERY.branchCard})` }}
                     >
-                      <div className="absolute inset-0 bg-brand-primary/35" />
+                      <div className="absolute inset-0 bg-black/20" />
                       <div className="relative rounded-lg bg-white/90 p-1.5">
                         <Store className="h-4 w-4 text-brand-primary" />
                       </div>
