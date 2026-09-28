@@ -111,12 +111,12 @@ export function SalesImportForm({ branchId }: { branchId: string }) {
       </form>
 
       {result?.kind === "error" ? (
-        <p className="mt-3 text-sm text-brand-danger">{errorText(result.message)}</p>
+        <p className="mt-3 text-sm text-danger">{errorText(result.message)}</p>
       ) : null}
 
       {result?.kind === "done" ? (
         <div className="mt-3 flex flex-col gap-2">
-          <p className="text-sm font-medium text-brand-success">
+          <p className="text-sm font-medium text-success">
             {result.summary.skipped.length > 0
               ? t("importDoneWithSkipped", {
                   imported: result.summary.imported,

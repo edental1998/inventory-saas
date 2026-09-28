@@ -5,7 +5,7 @@ import {
   getOrganizationBySlug,
 } from "@/lib/data/organizations";
 import { dbOrgToBrandTheme } from "./from-db";
-import { demoBakeryTheme } from "./brands/demo-bakery";
+import { gestionDefaultTheme } from "./brands/gestion-default";
 import type { BrandTheme } from "./types";
 
 /** עוגייה קלה שמסמנת "באיזה ארגון צופים" לפני התחברות — לא אימות, רק העדפת עיצוב */
@@ -36,6 +36,6 @@ export async function getCurrentTheme(): Promise<BrandTheme> {
     if (org) return dbOrgToBrandTheme(org);
   }
 
-  // ברירת מחדל ניטרלית (לדף שגיאה, או אם ה-DB לא זמין) — לא נחשפת בפועל בזרימה הרגילה
-  return demoBakeryTheme;
+  // ברירת מחדל ניטרלית של Gestion עצמה (לא מותג-דמו) — לדף שגיאה, או אם ה-DB לא זמין
+  return gestionDefaultTheme;
 }

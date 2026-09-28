@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { clsx } from "clsx";
+import { Menu, X, ChevronUp, ChevronDown } from "lucide-react";
 import { GestionMark } from "@/components/ui/GestionBranding";
 
 export type SidebarNavItem =
@@ -128,9 +129,11 @@ function NavGroup({
         aria-expanded={open}
       >
         <span>{label}</span>
-        <span aria-hidden className="text-xs text-brand-text/40">
-          {open ? "▲" : "▼"}
-        </span>
+        {open ? (
+          <ChevronUp aria-hidden className="h-4 w-4 text-brand-text-muted" />
+        ) : (
+          <ChevronDown aria-hidden className="h-4 w-4 text-brand-text-muted" />
+        )}
       </button>
       {open ? (
         <div className="mt-1 flex flex-col gap-1">
@@ -189,10 +192,10 @@ export function Sidebar({
         <button
           type="button"
           onClick={() => setMobileOpen((value) => !value)}
-          className="shrink-0 rounded-lg border border-black/10 px-3 py-2 text-sm md:hidden"
+          className="shrink-0 rounded-lg border border-brand-border p-2 md:hidden"
           aria-expanded={mobileOpen}
         >
-          {mobileOpen ? "✕" : "☰"}
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 

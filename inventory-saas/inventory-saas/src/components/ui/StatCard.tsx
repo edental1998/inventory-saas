@@ -4,9 +4,9 @@ type Tone = "default" | "success" | "warning" | "danger";
 
 const toneToTextClass: Record<Tone, string> = {
   default: "text-brand-primary",
-  success: "text-brand-success",
-  warning: "text-brand-warning",
-  danger: "text-brand-danger",
+  success: "text-success",
+  warning: "text-warning",
+  danger: "text-danger",
 };
 
 export function StatCard({

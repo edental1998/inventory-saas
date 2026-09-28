@@ -4,8 +4,8 @@ import type { DbTask } from "@/lib/data/types";
 const statusDotClasses: Record<DbTask["status"], string> = {
   PENDING: "bg-brand-text/30",
   IN_PROGRESS: "bg-brand-accent",
-  DONE: "bg-brand-success",
-  OVERDUE: "bg-brand-danger",
+  DONE: "bg-success",
+  OVERDUE: "bg-danger",
 };
 
 export function TaskCard({

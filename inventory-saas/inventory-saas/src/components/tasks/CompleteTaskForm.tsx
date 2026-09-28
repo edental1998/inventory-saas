@@ -86,12 +86,12 @@ export function CompleteTaskForm({
         />
       </div>
 
-      {error ? <p className="text-sm text-brand-danger">{error}</p> : null}
+      {error ? <p className="text-sm text-danger">{error}</p> : null}
 
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-lg bg-brand-success px-4 py-3 text-sm font-medium text-white disabled:opacity-60"
+        className="rounded-lg bg-success px-4 py-3 text-sm font-medium text-white disabled:opacity-60"
       >
         {isPending ? labels.submittingLabel : labels.submitLabel}
       </button>

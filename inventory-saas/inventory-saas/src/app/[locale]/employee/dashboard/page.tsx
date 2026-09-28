@@ -99,7 +99,7 @@ export default async function EmployeeDashboardPage({
     <div className="flex flex-col gap-6">
       {overdue.length > 0 ? (
         <section>
-          <h2 className="mb-2 font-semibold text-brand-danger">
+          <h2 className="mb-2 font-semibold text-danger">
             {t("myDay.overdue")}
           </h2>
           {taskList(overdue)}

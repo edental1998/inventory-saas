@@ -124,7 +124,7 @@ export function TaskDetailView({
       {task.status === "DONE" ? (
         <div className="rounded-2xl bg-brand-surface p-5 shadow-sm ring-1 ring-black/5">
           {isOverrideCompletion ? (
-            <p className="mb-2 rounded-lg bg-brand-warning/10 px-3 py-2 text-sm text-brand-warning">
+            <p className="mb-2 rounded-lg bg-warning/10 px-3 py-2 text-sm text-warning">
               {labels.completedBy}
             </p>
           ) : null}

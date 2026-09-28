@@ -87,7 +87,7 @@ export default async function LoginPage({
           </div>
 
           {googleErrorMessage ? (
-            <p className="mb-3 rounded-lg bg-brand-danger/10 px-3 py-2 text-center text-sm text-brand-danger">
+            <p className="mb-3 rounded-lg bg-danger/10 px-3 py-2 text-center text-sm text-danger">
               {googleErrorMessage}
             </p>
           ) : null}

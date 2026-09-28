@@ -22,7 +22,7 @@ export function TeamMemberForm({
 
   if (state.success) {
     return (
-      <div className="rounded-2xl bg-brand-success/10 p-5 text-sm text-brand-success">
+      <div className="rounded-2xl bg-success/10 p-5 text-sm text-success">
         {t("createdSuccess")}
       </div>
     );
@@ -91,7 +91,7 @@ export function TeamMemberForm({
         className="rounded-lg border border-black/10 bg-transparent px-3 py-2 text-sm text-brand-text placeholder:text-brand-text/40"
       />
 
-      {errorText ? <p className="text-sm text-brand-danger">{errorText}</p> : null}
+      {errorText ? <p className="text-sm text-danger">{errorText}</p> : null}
 
       <button
         type="submit"

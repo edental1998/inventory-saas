@@ -267,13 +267,13 @@ export function CaptureFlow({
           </div>
 
           {stockMoveResult?.kind === "error" && (
-            <p className="text-sm text-brand-danger">{stockMoveErrorText(stockMoveResult.message)}</p>
+            <p className="text-sm text-danger">{stockMoveErrorText(stockMoveResult.message)}</p>
           )}
           {stockMoveResult?.kind === "done" && (
             <p
               className={clsx(
                 "text-sm font-medium",
-                stockMoveResult.unallocated > 0 ? "text-brand-warning" : "text-brand-success"
+                stockMoveResult.unallocated > 0 ? "text-warning" : "text-success"
               )}
             >
               {stockMoveResult.unallocated > 0
@@ -354,7 +354,7 @@ export function CaptureFlow({
             </div>
           )}
 
-          {formError && <p className="text-sm text-brand-danger">{formError}</p>}
+          {formError && <p className="text-sm text-danger">{formError}</p>}
 
           <button
             type="submit"
@@ -445,7 +445,7 @@ export function CaptureFlow({
             type="button"
             onClick={handleReject}
             disabled={isPending}
-            className="text-sm text-brand-danger underline disabled:opacity-60"
+            className="text-sm text-danger underline disabled:opacity-60"
           >
             {isPending ? t("confirming") : t("reject")}
           </button>
@@ -490,7 +490,7 @@ export function CaptureFlow({
             type="button"
             onClick={handleReject}
             disabled={isPending}
-            className="text-sm text-brand-danger underline disabled:opacity-60"
+            className="text-sm text-danger underline disabled:opacity-60"
           >
             {t("reject")}
           </button>
@@ -534,7 +534,7 @@ function ResultCard({
     <div
       className={clsx(
         "rounded-xl p-5 text-sm shadow-sm",
-        tone === "success" ? "bg-brand-success/10 text-brand-success" : "bg-brand-danger/10 text-brand-danger"
+        tone === "success" ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
       )}
     >
       {children}

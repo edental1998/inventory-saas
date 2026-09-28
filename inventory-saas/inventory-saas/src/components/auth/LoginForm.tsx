@@ -45,7 +45,7 @@ export function LoginForm({
         />
 
         {state.error ? (
-          <p className="text-sm text-brand-danger">
+          <p className="text-sm text-danger">
             {state.error === "missing_fields"
               ? t("missingFields")
               : t("invalidCredentials")}

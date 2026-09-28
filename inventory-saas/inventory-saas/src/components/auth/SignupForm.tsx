@@ -76,7 +76,7 @@ export function SignupForm({ locale }: { locale: string }) {
         />
 
         {errorText ? (
-          <p className="text-sm text-brand-danger">{errorText}</p>
+          <p className="text-sm text-danger">{errorText}</p>
         ) : null}
 
         <button

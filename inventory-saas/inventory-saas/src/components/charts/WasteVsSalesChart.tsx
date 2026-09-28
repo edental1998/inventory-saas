@@ -32,15 +32,15 @@ export function WasteVsSalesChart({
               <span
                 className={clsx(
                   "font-medium",
-                  row.wastePercent >= 20 ? "text-brand-danger" : "text-brand-text/60"
+                  row.wastePercent >= 20 ? "text-danger" : "text-brand-text/60"
                 )}
               >
                 {row.wastePercent}% {wastedLabel}
               </span>
             </div>
             <div className="flex h-2 overflow-hidden rounded-full bg-black/5">
-              <div className="h-full bg-brand-success" style={{ width: `${soldPct}%` }} />
-              <div className="h-full bg-brand-danger" style={{ width: `${100 - soldPct}%` }} />
+              <div className="h-full bg-success" style={{ width: `${soldPct}%` }} />
+              <div className="h-full bg-danger" style={{ width: `${100 - soldPct}%` }} />
             </div>
             <div className="flex justify-between text-xs text-brand-text/50">
               <span>

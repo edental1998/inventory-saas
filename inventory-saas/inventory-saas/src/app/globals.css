@@ -5,33 +5,74 @@
  * src/lib/themes/theme-to-css-vars.ts) לטוקנים סמנטיים של Tailwind.
  * הודות לזה אפשר לכתוב bg-brand-primary / text-brand-onPrimary בכל רכיב
  * ולקבל אוטומטית את הצבע הנכון של המותג הפעיל, בלי if/else אחד בקוד הרכיב.
+ *
+ * Slice 6: שכבת טוקנים סמנטית מורחבת (hover/soft/contrast/border/היררכיית
+ * טקסט) — כולה נגזרת בשרת מתוך אותם 10 צבעי מותג גולמיים, בלי שדה DB חדש.
+ * success/warning/danger/info הם טוקנים סמנטיים קבועים של Gestion (לא
+ * "brand-*") — לא תלויי מותג/ארגון בכוונה, ראו semantic-colors.ts.
  */
 @theme inline {
   --color-brand-primary: var(--brand-color-primary);
+  --color-brand-primary-hover: var(--brand-color-primary-hover);
+  --color-brand-primary-soft: var(--brand-color-primary-soft);
+  --color-brand-on-primary: var(--brand-color-on-primary);
+
   --color-brand-secondary: var(--brand-color-secondary);
+  --color-brand-on-secondary: var(--brand-color-on-secondary);
+
   --color-brand-accent: var(--brand-color-accent);
+  --color-brand-accent-soft: var(--brand-color-accent-soft);
+  --color-brand-on-accent: var(--brand-color-on-accent);
+
   --color-brand-background: var(--brand-color-background);
   --color-brand-surface: var(--brand-color-surface);
+  --color-brand-surface-elevated: var(--brand-color-surface-elevated);
+  --color-brand-border: var(--brand-color-border);
+
   --color-brand-text: var(--brand-color-text);
-  --color-brand-on-primary: var(--brand-color-on-primary);
-  --color-brand-success: var(--brand-color-success);
-  --color-brand-warning: var(--brand-color-warning);
-  --color-brand-danger: var(--brand-color-danger);
+  --color-brand-text-secondary: var(--brand-color-text-secondary);
+  --color-brand-text-muted: var(--brand-color-text-muted);
+
   --font-brand: var(--brand-font-family), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* ברירת מחדל למקרה שהמשתנים עוד לא הוזרקו (למשל שגיאת רשת בטעינת theme) */
+/*
+ * סמנטיים קבועים של Gestion — success/warning/danger/info (ראו
+ * semantic-colors.ts). בכוונה לא חלק מה-@theme inline למעלה: הערכים האלה
+ * אף פעם לא משתנים לפי ארגון, אז אין צורך להזריק אותם דינמית לכל בקשה —
+ * טוקן רגיל שנקבע פעם אחת בזמן build, לא הפניה חיה ל-var שמוזרק ב-runtime.
+ */
+@theme {
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+}
+
+/* ברירת מחדל למקרה שהמשתנים עוד לא הוזרקו (למשל שגיאת רשת בטעינת theme) —
+   ערכי Gestion הניטרליים (gestion-default.ts), לא עוד מותג-בייקרי-דמו */
 :root {
-  --brand-color-primary: #8b4513;
-  --brand-color-secondary: #d2a679;
-  --brand-color-accent: #e07a3f;
-  --brand-color-background: #fbf6ef;
-  --brand-color-surface: #ffffff;
-  --brand-color-text: #3a2e22;
+  --brand-color-primary: #3b5bdb;
+  --brand-color-primary-hover: #2f4bc0;
+  --brand-color-primary-soft: #e8ecfb;
   --brand-color-on-primary: #ffffff;
-  --brand-color-success: #16a34a;
-  --brand-color-warning: #d97706;
-  --brand-color-danger: #dc2626;
+
+  --brand-color-secondary: #5c6784;
+  --brand-color-on-secondary: #ffffff;
+
+  --brand-color-accent: #2f9e8f;
+  --brand-color-accent-soft: #e3f3f1;
+  --brand-color-on-accent: #ffffff;
+
+  --brand-color-background: #f5f6f8;
+  --brand-color-surface: #ffffff;
+  --brand-color-surface-elevated: #ffffff;
+  --brand-color-border: #e4e6eb;
+
+  --brand-color-text: #1e2330;
+  --brand-color-text-secondary: #565c6e;
+  --brand-color-text-muted: #868c9c;
+
   --brand-font-family: "Heebo";
 }
 
@@ -44,3 +85,23 @@ body {
 
 /* חשוב: כל הריווח/היישור בפרויקט נכתב עם מחלקות לוגיות (ms-/me-/ps-/pe-/text-start)
    ולעולם לא עם ml-/mr-/text-left, כדי שהמעבר בין RTL ל-LTR יעבוד נכון אוטומטית. */
+
+/* מצב פוקוס עקבי לכל האתר — נגישות בסיסית לפני שהרכיבים החדשים (Button/Input
+   וכו') מוסיפים עיצוב פוקוס משלהם */
+:focus-visible {
+  outline: 2px solid var(--brand-color-primary);
+  outline-offset: 2px;
+}
+
+/* prefers-reduced-motion: לא מבטלים אנימציות לגמרי (חלקן מתקשרות מצב, לא
+   רק קישוט), אלא מקצרות אותן כמעט לאפס — עדיין "קורה", בלי תנועה מורגשת */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

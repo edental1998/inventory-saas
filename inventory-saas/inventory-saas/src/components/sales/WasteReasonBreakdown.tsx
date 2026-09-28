@@ -35,13 +35,13 @@ export function WasteReasonBreakdown({
             key={row.reason}
             className={clsx(
               "flex items-center justify-between rounded-lg px-3 py-2",
-              flagged ? "bg-brand-danger/10" : "bg-black/[0.03]"
+              flagged ? "bg-danger/10" : "bg-black/[0.03]"
             )}
           >
             <span
               className={clsx(
                 "text-sm font-medium",
-                flagged ? "text-brand-danger" : "text-brand-text"
+                flagged ? "text-danger" : "text-brand-text"
               )}
             >
               {reasonLabels[row.reason] ?? unspecifiedLabel}

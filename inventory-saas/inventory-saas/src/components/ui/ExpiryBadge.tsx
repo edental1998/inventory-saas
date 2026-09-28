@@ -3,9 +3,9 @@ import { clsx } from "clsx";
 type Tone = "success" | "warning" | "danger";
 
 const toneClasses: Record<Tone, string> = {
-  success: "bg-brand-success/10 text-brand-success",
-  warning: "bg-brand-warning/10 text-brand-warning",
-  danger: "bg-brand-danger/10 text-brand-danger",
+  success: "bg-success/10 text-success",
+  warning: "bg-warning/10 text-warning",
+  danger: "bg-danger/10 text-danger",
 };
 
 /** ממיר מספר ימים עד תפוגה לטון חזותי: אדום אם כבר פג/פג היום, כתום אם קרוב, ירוק אחרת */

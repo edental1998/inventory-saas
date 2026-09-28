@@ -43,7 +43,7 @@ export function EstimatedVsActualTable({
               <td
                 className={clsx(
                   "py-3 font-medium",
-                  row.gap > 0 ? "text-brand-danger" : "text-brand-text/60"
+                  row.gap > 0 ? "text-danger" : "text-brand-text/60"
                 )}
               >
                 {row.gap > 0 ? `+${row.gap}` : row.gap}
