@@ -7,8 +7,8 @@ import { listDemoAccounts } from "@/lib/data/users";
 import { quickLoginAction } from "@/lib/auth/actions";
 import { DEMO_ACCOUNT_PASSWORD } from "@/lib/auth/demo-password";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
-import { GestionMark, PoweredByGestion } from "@/components/ui/GestionBranding";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { Card } from "@/components/ui/Card";
 
 const ROLE_LABEL_KEY: Record<string, string> = {
   CHAIN_MANAGER: "nav.ceoDashboard",
@@ -17,9 +17,12 @@ const ROLE_LABEL_KEY: Record<string, string> = {
 };
 
 /**
- * מסך התחברות מלא-מותג ואמיתי: הרקע, הלוגו וצבע הכפתור מגיעים מ-BrandTheme
+ * מסך התחברות מלא-מותג ואמיתי: הלוגו וצבע הכפתור מגיעים מ-BrandTheme
  * (שנטען מה-DB לפי רמז הארגון, ראו current-theme.ts), וההתחברות עצמה קוראת
  * בפועל למסד הנתונים ובודקת סיסמה מוצפנת (bcrypt) — לא UI מדומה.
+ *
+ * Slice 8: אותו AuthShell/Card/רקע ניטרלי כמו כל דשבורד — לא עוד רקע מלא
+ * בצבע המותג שהיה מנותק חזותית משאר המוצר.
  */
 export default async function LoginPage({
   params,
@@ -54,83 +57,53 @@ export default async function LoginPage({
         : null;
 
   return (
-    <main
-      className="relative flex min-h-screen items-center justify-center p-6"
-      style={
-        theme.backgroundImage.login
-          ? {
-              backgroundImage: `url(${theme.backgroundImage.login})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }
-          : { backgroundColor: "var(--brand-color-primary)" }
-      }
-    >
-      <div className="absolute end-6 top-6">
-        <LocaleSwitcher />
-      </div>
-
-      <div className="flex w-full max-w-sm flex-col gap-4">
-        <div className="rounded-2xl bg-brand-surface p-8 shadow-xl">
-          <div className="mb-6 flex flex-col items-center gap-3 text-center">
-            <GestionMark className="h-24 w-auto" />
-            {/* eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג */}
-            <img
-              src={theme.logo.light}
-              alt={theme.displayName}
-              className="h-14 w-14 rounded-xl"
-            />
-            <h1 className="text-lg font-bold text-brand-text">
-              {theme.displayName}
-            </h1>
-            <p className="text-sm text-brand-text/60">{t("login.title")}</p>
-          </div>
-
-          {googleErrorMessage ? (
-            <p className="mb-3 rounded-lg bg-danger/10 px-3 py-2 text-center text-sm text-danger">
-              {googleErrorMessage}
-            </p>
-          ) : null}
-
-          <LoginForm locale={locale} />
+    <AuthShell theme={theme}>
+      <div className="mb-6 flex flex-col items-center gap-3 text-center">
+        {/* eslint-disable-next-line @next/next/no-img-element -- לוגו חיצוני דינמי לפי מותג */}
+        <img
+          src={theme.logo.light}
+          alt={theme.displayName}
+          className="h-14 w-14 rounded-xl"
+        />
+        <div>
+          <h1 className="text-lg font-bold text-brand-text">{theme.displayName}</h1>
+          <p className="text-sm text-brand-text-secondary">{t("login.title")}</p>
         </div>
+      </div>
 
-        {accountsForOrg.length > 0 ? (
-          <div className="rounded-2xl bg-brand-surface/90 p-4 text-sm shadow-xl">
-            <p className="mb-2 font-medium text-brand-text">
-              {t("login.demoAccounts")}
-            </p>
-            <div className="flex flex-col gap-2">
-              {accountsForOrg.map((account) => (
-                <form key={account.email} action={boundQuickLogin}>
-                  <input type="hidden" name="email" value={account.email} />
-                  <input
-                    type="hidden"
-                    name="password"
-                    value={DEMO_ACCOUNT_PASSWORD}
-                  />
-                  <button
-                    type="submit"
-                    className="flex w-full items-center justify-between rounded-lg bg-black/5 px-3 py-2 text-start hover:bg-black/10"
-                  >
-                    <span className="text-brand-text">{account.name}</span>
-                    <span className="text-xs text-brand-text/50">
-                      {t(ROLE_LABEL_KEY[account.role] ?? "nav.employeeDashboard")}
-                    </span>
-                  </button>
-                </form>
-              ))}
-            </div>
-            <p className="mt-2 text-xs text-brand-text/40">
-              {t("login.demoPasswordHint", { password: DEMO_ACCOUNT_PASSWORD })}
-            </p>
+      {googleErrorMessage ? (
+        <p className="mb-3 rounded-lg bg-danger/10 px-3 py-2 text-center text-sm text-danger">
+          {googleErrorMessage}
+        </p>
+      ) : null}
+
+      <LoginForm locale={locale} />
+
+      {accountsForOrg.length > 0 ? (
+        <Card padding="sm" className="mt-4 text-sm">
+          <p className="mb-2 font-medium text-brand-text">{t("login.demoAccounts")}</p>
+          <div className="flex flex-col gap-2">
+            {accountsForOrg.map((account) => (
+              <form key={account.email} action={boundQuickLogin}>
+                <input type="hidden" name="email" value={account.email} />
+                <input type="hidden" name="password" value={DEMO_ACCOUNT_PASSWORD} />
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-start hover:bg-black/5"
+                >
+                  <span className="text-brand-text">{account.name}</span>
+                  <span className="text-xs text-brand-text-muted">
+                    {t(ROLE_LABEL_KEY[account.role] ?? "nav.employeeDashboard")}
+                  </span>
+                </button>
+              </form>
+            ))}
           </div>
-        ) : null}
-      </div>
-
-      <div className="absolute inset-x-0 bottom-6 flex justify-center">
-        <PoweredByGestion className="rounded-full bg-brand-surface/90 px-3 py-1.5 shadow" />
-      </div>
-    </main>
+          <p className="mt-2 text-xs text-brand-text-muted">
+            {t("login.demoPasswordHint", { password: DEMO_ACCOUNT_PASSWORD })}
+          </p>
+        </Card>
+      ) : null}
+    </AuthShell>
   );
 }

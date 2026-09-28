@@ -6,6 +6,8 @@ import {
   signupAction,
   type SignupActionState,
 } from "@/lib/auth/signup-actions";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 const INITIAL_STATE: SignupActionState = {};
 
@@ -41,57 +43,49 @@ export function SignupForm({ locale }: { locale: string }) {
   return (
     <div className="flex flex-col gap-4">
       <form action={formAction} className="flex flex-col gap-3">
-        <input
+        <Input
           name="organizationName"
           required
           value={organizationName}
           onChange={(event) => setOrganizationName(event.target.value)}
           placeholder={t("organizationName")}
-          className="rounded-lg border border-black/10 bg-transparent px-3 py-2 text-sm text-brand-text placeholder:text-brand-text/40"
         />
-        <input
+        <Input
           name="adminName"
           required
           value={adminName}
           onChange={(event) => setAdminName(event.target.value)}
           placeholder={t("adminName")}
-          className="rounded-lg border border-black/10 bg-transparent px-3 py-2 text-sm text-brand-text placeholder:text-brand-text/40"
         />
-        <input
+        <Input
           name="email"
           type="email"
           required
           autoComplete="email"
           placeholder={tLogin("email")}
-          className="rounded-lg border border-black/10 bg-transparent px-3 py-2 text-sm text-brand-text placeholder:text-brand-text/40"
         />
-        <input
+        <Input
           name="password"
           type="password"
           required
           minLength={8}
           autoComplete="new-password"
           placeholder={tLogin("password")}
-          className="rounded-lg border border-black/10 bg-transparent px-3 py-2 text-sm text-brand-text placeholder:text-brand-text/40"
         />
 
         {errorText ? (
           <p className="text-sm text-danger">{errorText}</p>
         ) : null}
 
-        <button
-          type="submit"
-          disabled={isPending}
-          className="mt-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-brand-on-primary disabled:opacity-60"
-        >
+        <Button type="submit" disabled={isPending} className="mt-2">
           {isPending ? t("submitting") : t("submit")}
-        </button>
+        </Button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-brand-text/40">
-        <div className="h-px flex-1 bg-black/10" />
+      <div className="flex items-center gap-3 text-xs text-brand-text-muted">
+        <div className="h-px flex-1 bg-brand-border" />
         {tLogin("orDivider")}
-        <div className="h-px flex-1 bg-black/10" />
+        <div className="h-px flex-1 bg-brand-border" />
       </div>
 
       <a
@@ -100,7 +94,7 @@ export function SignupForm({ locale }: { locale: string }) {
         onClick={(event) => {
           if (!googleReady) event.preventDefault();
         }}
-        className={`flex items-center justify-center gap-2 rounded-lg border border-black/10 px-4 py-2 text-sm font-medium text-brand-text ${
+        className={`flex items-center justify-center gap-2 rounded-lg border border-brand-border px-4 py-2 text-sm font-medium text-brand-text ${
           googleReady ? "hover:bg-black/5" : "cursor-not-allowed opacity-50"
         }`}
       >
@@ -108,7 +102,7 @@ export function SignupForm({ locale }: { locale: string }) {
         {tLogin("continueWithGoogle")}
       </a>
       {!googleReady ? (
-        <p className="-mt-2 text-center text-xs text-brand-text/40">
+        <p className="-mt-2 text-center text-xs text-brand-text-muted">
           {t("googleNeedsNames")}
         </p>
       ) : null}

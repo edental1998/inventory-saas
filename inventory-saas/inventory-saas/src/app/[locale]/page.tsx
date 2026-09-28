@@ -38,7 +38,7 @@ export default async function Home({
         <h1 className="text-2xl font-bold text-brand-text">
           {t("common.appName")}
         </h1>
-        <p className="mt-1 text-brand-text/60">{t("landing.subtitle")}</p>
+        <p className="mt-1 text-brand-text-secondary">{t("landing.subtitle")}</p>
       </div>
 
       <div className="grid w-full max-w-md gap-3">
@@ -48,7 +48,7 @@ export default async function Home({
             <form key={org.id} action={boundAction}>
               <button
                 type="submit"
-                className="w-full rounded-xl bg-brand-surface px-5 py-4 text-center font-medium text-brand-text shadow-sm ring-1 ring-black/5 transition-colors hover:bg-brand-primary hover:text-brand-on-primary"
+                className="w-full rounded-xl bg-brand-surface px-5 py-4 text-center font-medium text-brand-text shadow-sm ring-1 ring-brand-border transition-colors hover:bg-brand-primary hover:text-brand-on-primary"
               >
                 {org.name}
               </button>
@@ -59,7 +59,7 @@ export default async function Home({
 
       <Link
         href="/login"
-        className="text-sm text-brand-text/50 underline underline-offset-2"
+        className="text-sm text-brand-text-muted underline underline-offset-2"
       >
         {t("common.goToLogin")}
       </Link>

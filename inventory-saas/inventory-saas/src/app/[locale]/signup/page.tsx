@@ -2,15 +2,18 @@ import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/get-session";
 import { ROLE_HOME_PATH } from "@/lib/auth/types";
+import { getCurrentTheme } from "@/lib/themes/current-theme";
 import { SignupForm } from "@/components/auth/SignupForm";
-import { LocaleSwitcher } from "@/components/ui/LocaleSwitcher";
-import { GestionMark, PoweredByGestion } from "@/components/ui/GestionBranding";
+import { AuthShell } from "@/components/auth/AuthShell";
 
 /**
  * מסך ההקמה העצמאית של עסק חדש: כאן בעל/ת עסק אמיתי/ת (בייקרי, בית קפה,
  * ועוד) יוצר/ת ארגון חדש משלו/ה במערכת — עם אימייל+סיסמה, או עם חשבון
  * Google — בלי שאף אחד אחר מזין את הפרטים בשמם. ראו
  * src/lib/auth/signup-actions.ts ו-src/lib/data/signup.ts.
+ *
+ * Slice 8: אותו AuthShell כמו login — לפני שיש ארגון, theme הוא ברירת
+ * המחדל הניטרלית של Gestion (gestion-default.ts), לא עוד מותג-דמו.
  */
 export default async function SignupPage({
   params,
@@ -18,49 +21,34 @@ export default async function SignupPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const [t, session] = await Promise.all([getTranslations(), getSession()]);
+  const [t, session, theme] = await Promise.all([
+    getTranslations(),
+    getSession(),
+    getCurrentTheme(),
+  ]);
 
   if (session) {
     redirect(`/${locale}${ROLE_HOME_PATH[session.role]}`);
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-brand-background p-6">
-      <div className="absolute end-6 top-6">
-        <LocaleSwitcher />
+    <AuthShell theme={theme}>
+      <div className="mb-6 text-center">
+        <h1 className="text-lg font-bold text-brand-text">{t("signup.title")}</h1>
+        <p className="text-sm text-brand-text-secondary">{t("signup.subtitle")}</p>
       </div>
 
-      <div className="flex w-full max-w-sm flex-col gap-4">
-        <div className="rounded-2xl bg-brand-surface p-8 shadow-xl">
-          <div className="mb-6 flex flex-col items-center gap-3 text-center">
-            <GestionMark className="h-24 w-auto" />
-            <div>
-              <h1 className="text-lg font-bold text-brand-text">
-                {t("signup.title")}
-              </h1>
-              <p className="text-sm text-brand-text/60">
-                {t("signup.subtitle")}
-              </p>
-            </div>
-          </div>
+      <SignupForm locale={locale} />
 
-          <SignupForm locale={locale} />
-
-          <p className="mt-6 text-center text-sm text-brand-text/60">
-            {t("signup.haveAccount")}{" "}
-            <a
-              href={`/${locale}/login`}
-              className="font-medium text-brand-primary underline"
-            >
-              {t("signup.loginLink")}
-            </a>
-          </p>
-        </div>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-6 flex justify-center">
-        <PoweredByGestion className="rounded-full bg-brand-surface/90 px-3 py-1.5 shadow" />
-      </div>
-    </main>
+      <p className="mt-6 text-center text-sm text-brand-text-secondary">
+        {t("signup.haveAccount")}{" "}
+        <a
+          href={`/${locale}/login`}
+          className="font-medium text-brand-primary underline"
+        >
+          {t("signup.loginLink")}
+        </a>
+      </p>
+    </AuthShell>
   );
 }
