@@ -18,6 +18,8 @@ export interface SessionPayload {
   role: UserRole;
   name: string;
   exp: number; // מועד תפוגה, מילישניות מאז epoch
+  /** גרסת session של המשתמש בעת החתימה (users.session_version). חסר = session ישן = 0. */
+  sv?: number;
 }
 
 /**

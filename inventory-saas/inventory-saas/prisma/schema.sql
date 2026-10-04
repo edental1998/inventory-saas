@@ -253,3 +253,12 @@ where password_hash is not null
   and organization_id in (
     select id from organizations where slug in ('demo-bakery', 'demo-cafe')
   );
+
+-- ביטול session בצד השרת (אבטחה): ה-session הוא עוגייה חתומה בלי מצב בשרת, ולכן
+-- עד עכשיו אי אפשר היה לבטל session קיים בלי להחליף את AUTH_SECRET לכולם.
+-- session_version נחתם בתוך ה-session ונבדק מול העמודה הזו בכל בקשה (getSession);
+-- הגדלה שלה מבטלת מיד את כל ה-sessions הקיימים של אותו משתמש. disabled_at
+-- מנטרל משתמש לגמרי (כניסה + sessions קיימים) בלי למחוק אותו או את הנתונים שלו.
+-- שתיהן אידמפוטנטיות ותוספתיות: sessions ישנים (בלי sv) נחשבים גרסה 0.
+alter table users add column if not exists session_version integer not null default 0;
+alter table users add column if not exists disabled_at timestamptz;

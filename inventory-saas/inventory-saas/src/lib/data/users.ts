@@ -10,13 +10,30 @@ export interface AuthUserRow {
   email: string;
   passwordHash: string;
   role: UserRole;
+  disabled: boolean;
+}
+
+/**
+ * מצב האימות של משתמש לפי id — לבדיקת session בכל בקשה (getSession) ולחתימת
+ * session חדש (establishSession). null = המשתמש לא קיים.
+ */
+export async function getUserSessionState(
+  userId: string
+): Promise<{ sessionVersion: number; disabled: boolean } | null> {
+  const { rows } = await query<{ session_version: number; disabled_at: Date | null }>(
+    `select session_version, disabled_at from users where id = $1`,
+    [userId]
+  );
+  const row = rows[0];
+  if (!row) return null;
+  return { sessionVersion: row.session_version, disabled: row.disabled_at !== null };
 }
 
 export async function findUserByEmail(
   email: string
 ): Promise<AuthUserRow | null> {
   const { rows } = await query(
-    `select id, organization_id, branch_id, name, email, password_hash, role
+    `select id, organization_id, branch_id, name, email, password_hash, role, disabled_at
      from users where email = $1`,
     [email.trim().toLowerCase()]
   );
@@ -30,6 +47,7 @@ export async function findUserByEmail(
     email: row.email,
     passwordHash: row.password_hash,
     role: row.role,
+    disabled: row.disabled_at !== null,
   };
 }
 

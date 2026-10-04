@@ -2,7 +2,11 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { findUserByEmail, type AuthUserRow } from "@/lib/data/users";
+import {
+  findUserByEmail,
+  getUserSessionState,
+  type AuthUserRow,
+} from "@/lib/data/users";
 import { verifyPassword } from "./password";
 import {
   SESSION_COOKIE_NAME,
@@ -44,6 +48,7 @@ async function authenticate(
   if (!email || !password) return null;
   const user = await findUserByEmail(email);
   if (!user) return null;
+  if (user.disabled) return null;
   // משתמש שנוצר דרך Google בלבד (או חשבון דמו מושבת) אין לו סיסמה מקומית —
   // בלי הבדיקה הזו bcrypt.compare זורק על hash ריק במקום להחזיר "התחברות נכשלה".
   if (!user.passwordHash) return null;
@@ -52,6 +57,12 @@ async function authenticate(
 }
 
 export async function establishSession(user: SessionUser): Promise<void> {
+  // הגרסה נקראת מה-DB ברגע הפתיחה (לא מהקורא), כדי ש-session חדש תמיד ייחתם
+  // עם הגרסה העדכנית; משתמש חסר/מושבת לא מקבל session בשום זרימה (גם Google).
+  const state = await getUserSessionState(user.id);
+  if (!state || state.disabled) {
+    throw new Error("Cannot establish a session for a missing or disabled user");
+  }
   const token = await signSessionToken({
     userId: user.id,
     organizationId: user.organizationId,
@@ -59,6 +70,7 @@ export async function establishSession(user: SessionUser): Promise<void> {
     role: user.role,
     name: user.name,
     exp: Date.now() + SESSION_MAX_AGE_SECONDS * 1000,
+    sv: state.sessionVersion,
   });
 
   const cookieStore = await cookies();
