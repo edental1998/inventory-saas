@@ -157,7 +157,15 @@
     "dueTimeLabel": "שעת יעד",
     "photoRequiredLabel": "נדרשת תמונה בסיום המשימה",
     "reassignLabel": "שייך/י ל:",
-    "reassignButton": "עדכון שיוך"
+    "reassignButton": "עדכון שיוך",
+    "createdNotice": "המשימה נוצרה",
+    "errors": {
+      "titleRequired": "יש להזין שם למשימה.",
+      "dueIncomplete": "יש להזין גם תאריך יעד וגם שעת יעד, או להשאיר את שניהם ריקים.",
+      "dueInvalid": "תאריך או שעת היעד אינם תקינים. בדקו ונסו שוב.",
+      "assigneeInvalid": "המשתמש/ת שנבחר/ה אינו/ה שייך/ת לסניף זה.",
+      "forbidden": "אין לך הרשאה ליצור משימות כאן."
+    }
   },
   "employee": {
     "title": "היום שלי",

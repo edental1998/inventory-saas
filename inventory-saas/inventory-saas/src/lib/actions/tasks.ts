@@ -45,15 +45,28 @@ async function extractProofPhotoKey(
   return { ok: true, key: saved.key };
 }
 
+export type CreateTaskErrorCode =
+  | "titleRequired"
+  | "dueIncomplete"
+  | "dueInvalid"
+  | "assigneeInvalid"
+  | "forbidden";
+
+export type CreateTaskState =
+  | { status: "idle" }
+  | { status: "ok" }
+  | { status: "error"; code: CreateTaskErrorCode };
+
 type DueAtResult =
   | { ok: true; date: string | null; time: string | null }
-  | { ok: false };
+  | { ok: false; code: "dueIncomplete" | "dueInvalid" };
 
 /**
  * מפענח ומאמת את שדות תאריך/שעת היעד מטופס יצירת המשימה (Slice 4.5).
  * שני השדות ריקים = בלי יעד (due_at null, בדיוק כמו שכבר נתמך בתצוגה —
- * ראו labels.noDue). רק אחד מהם מולא, או תאריך/שעה לא תקינים (למשל 30
- * בפברואר, שעה 25:99) — נדחה (ok:false), לא נשמר "בטעות" עם ערך שגוי.
+ * ראו labels.noDue). רק אחד מהם מולא (dueIncomplete), או תאריך/שעה לא
+ * תקינים — למשל 30 בפברואר, שעה 25:99 (dueInvalid) — נדחה עם קוד שגיאה
+ * שמוצג למשתמש/ת, לא נשמר "בטעות" עם ערך שגוי ולא נכשל בשקט.
  * הבדיקה כאן היא תקינות לוח-שנה גרידא; תרגום ה-timestamp האמיתי לפי אזור
  * הזמן של הסניף נעשה ב-SQL (AT TIME ZONE), לא כאן.
  */
@@ -61,11 +74,11 @@ function parseDueAt(formData: FormData): DueAtResult {
   const dateRaw = String(formData.get("dueDate") ?? "").trim();
   const timeRaw = String(formData.get("dueTime") ?? "").trim();
   if (!dateRaw && !timeRaw) return { ok: true, date: null, time: null };
-  if (!dateRaw || !timeRaw) return { ok: false };
+  if (!dateRaw || !timeRaw) return { ok: false, code: "dueIncomplete" };
 
   const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateRaw);
   const timeMatch = /^(\d{2}):(\d{2})$/.exec(timeRaw);
-  if (!dateMatch || !timeMatch) return { ok: false };
+  if (!dateMatch || !timeMatch) return { ok: false, code: "dueInvalid" };
 
   const year = Number(dateMatch[1]);
   const month = Number(dateMatch[2]);
@@ -79,7 +92,7 @@ function parseDueAt(formData: FormData): DueAtResult {
     roundTrip.getUTCDate() === day &&
     roundTrip.getUTCHours() === hour &&
     roundTrip.getUTCMinutes() === minute;
-  if (!valid) return { ok: false };
+  if (!valid) return { ok: false, code: "dueInvalid" };
 
   return { ok: true, date: dateRaw, time: timeRaw };
 }
@@ -197,15 +210,18 @@ export async function toggleChecklistItemAction(formData: FormData): Promise<voi
 /** יצירת משימה חדשה בסניף — רק למנהל סניף/הנהלה (נבדק בשרת, לא רק בממשק) */
 export async function createTaskAction(
   branchId: string,
+  _prevState: CreateTaskState,
   formData: FormData
-): Promise<void> {
+): Promise<CreateTaskState> {
+  const fail = (code: CreateTaskErrorCode): CreateTaskState => ({ status: "error", code });
+
   const session = await getSession();
-  if (!session || session.role === "EMPLOYEE") return;
+  if (!session || session.role === "EMPLOYEE") return fail("forbidden");
   // מנהל סניף יוצר משימות רק בסניף שלו; והסניף (גם למנכ"ל) חייב להיות של
   // הארגון של המשתמש — לא לסמוך על branchId שהגיע מהלקוח.
-  if (session.role === "BRANCH_MANAGER" && session.branchId !== branchId) return;
+  if (session.role === "BRANCH_MANAGER" && session.branchId !== branchId) return fail("forbidden");
   const branch = await getBranchForOrg(branchId, session.organizationId);
-  if (!branch) return;
+  if (!branch) return fail("forbidden");
 
   const title = String(formData.get("title") ?? "").trim();
   const typeRaw = String(formData.get("type") ?? "CUSTOM");
@@ -224,12 +240,14 @@ export async function createTaskAction(
     .filter(Boolean)
     .map((label) => ({ id: randomUUID(), label, done: false }));
 
-  if (!title) return;
+  if (!title) return fail("titleRequired");
   // המשויך/ת חייב/ת להיות משתמש/ת באותו סניף (ולכן גם באותו ארגון)
-  if (assignedToId && !(await isUserInBranch(assignedToId, branch.id))) return;
+  if (assignedToId && !(await isUserInBranch(assignedToId, branch.id))) {
+    return fail("assigneeInvalid");
+  }
 
   const dueAt = parseDueAt(formData);
-  if (!dueAt.ok) return;
+  if (!dueAt.ok) return fail(dueAt.code);
 
   await query(
     `insert into tasks
@@ -257,6 +275,7 @@ export async function createTaskAction(
   );
 
   revalidatePath("/", "layout");
+  return { status: "ok" };
 }
 
 /**

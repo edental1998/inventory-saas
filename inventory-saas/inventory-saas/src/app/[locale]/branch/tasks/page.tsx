@@ -9,8 +9,8 @@ import { getBranchEmployees } from "@/lib/data/users";
 import { createTaskAction } from "@/lib/actions/tasks";
 import { TaskBoardTabs, type TaskBoardLabels } from "@/components/tasks/TaskBoardTabs";
 import { Card } from "@/components/ui/Card";
-import { Input, Textarea, Select } from "@/components/ui/Input";
-import { Button, buttonClasses } from "@/components/ui/Button";
+import { buttonClasses } from "@/components/ui/Button";
+import { CreateTaskForm, type CreateTaskFormLabels } from "@/components/tasks/CreateTaskForm";
 
 const TASK_TYPES = [
   "RECEIVE_DELIVERY",
@@ -73,6 +73,27 @@ export default async function BranchTasksPage({
     },
   };
 
+  const createLabels: CreateTaskFormLabels = {
+    titlePlaceholder: t("branch.createTask"),
+    assignPlaceholder: `${t("task.assignedTo")}...`,
+    dueDateLabel: t("taskBoard.dueDateLabel"),
+    dueTimeLabel: t("taskBoard.dueTimeLabel"),
+    descriptionPlaceholder: t("taskDetail.description"),
+    checklistPlaceholder: t("taskBoard.checklistPlaceholder"),
+    photoRequiredLabel: t("taskBoard.photoRequiredLabel"),
+    submit: t("branch.createTask"),
+    submitting: t("taskDetail.submitting"),
+    created: t("taskBoard.createdNotice"),
+    errors: {
+      titleRequired: t("taskBoard.errors.titleRequired"),
+      dueIncomplete: t("taskBoard.errors.dueIncomplete"),
+      dueInvalid: t("taskBoard.errors.dueInvalid"),
+      assigneeInvalid: t("taskBoard.errors.assigneeInvalid"),
+      forbidden: t("taskBoard.errors.forbidden"),
+    },
+    typeLabels: Object.fromEntries(TASK_TYPES.map((type) => [type, t(`task.type.${type}`)])),
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
@@ -91,67 +112,12 @@ export default async function BranchTasksPage({
             <Plus className="h-4 w-4 text-brand-primary transition-transform group-open:rotate-45" />
             {t("branch.createTask")}
           </summary>
-          <form action={boundCreateTask} className="flex flex-col gap-3 border-t border-brand-border p-4">
-            <div className="flex flex-wrap gap-3">
-              <Input
-                name="title"
-                required
-                placeholder={t("branch.createTask")}
-                className="min-w-[200px] flex-1"
-              />
-              <Select name="type" className="w-auto" defaultValue="CUSTOM">
-                {TASK_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {t(`task.type.${type}`)}
-                  </option>
-                ))}
-              </Select>
-              <Select name="assignedToId" className="w-auto" defaultValue="">
-                <option value="">{t("task.assignedTo")}...</option>
-                {employees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-
-            <div className="flex flex-wrap items-end gap-3">
-              <label className="flex flex-col gap-1 text-xs text-brand-text-secondary">
-                {t("taskBoard.dueDateLabel")}
-                <Input type="date" name="dueDate" className="w-auto" />
-              </label>
-              <label className="flex flex-col gap-1 text-xs text-brand-text-secondary">
-                {t("taskBoard.dueTimeLabel")}
-                <Input type="time" name="dueTime" defaultValue="17:00" className="w-auto" />
-              </label>
-            </div>
-
-            <Textarea
-              name="description"
-              placeholder={t("taskDetail.description")}
-              rows={2}
-            />
-
-            <Textarea
-              name="checklist"
-              placeholder={t("taskBoard.checklistPlaceholder")}
-              rows={3}
-            />
-
-            <label className="flex items-center gap-2 text-sm text-brand-text">
-              <input
-                type="checkbox"
-                name="photoRequired"
-                className="h-4 w-4 rounded border-brand-border accent-brand-primary"
-              />
-              {t("taskBoard.photoRequiredLabel")}
-            </label>
-
-            <Button type="submit" className="self-start">
-              {t("branch.createTask")}
-            </Button>
-          </form>
+          <CreateTaskForm
+            action={boundCreateTask}
+            employees={employees.map((employee) => ({ id: employee.id, name: employee.name }))}
+            taskTypes={TASK_TYPES}
+            labels={createLabels}
+          />
         </details>
       </Card>
 
